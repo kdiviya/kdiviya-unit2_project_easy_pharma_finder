@@ -1,0 +1,76 @@
+{
+  
+    "CVS Pharmacy": [
+      {
+        "medicationName": "Azithromycin",
+        "actualCost": 200,
+        "insurancePaidPercent": 80
+      },
+      {
+        "medicationName": "Cephalosporin",
+        "actualCost": 300,
+        "insurancePaidPercent": 85
+      },
+      {
+        "medicationName": "Doxycycline",
+        "actualCost": 500,
+        "insurancePaidPercent": 60
+      }
+    ],
+
+    "Walgreens Pharmacy": [
+      {
+        "medicationName": "Azithromycin",
+        "actualCost": 200,
+        "insurancePaidPercent": 90
+      },
+      {
+        "medicationName": "Cephalosporin",
+        "actualCost": 300,
+        "insurancePaidPercent": 60
+      },
+      {
+        "medicationName": "Doxycycline",
+        "actualCost": 500,
+        "insurancePaidPercent": 70
+      }
+    ],
+
+    "Walmart Pharmacy": [
+      {
+        "medicationName": "Azithromycin",
+        "actualCost": 200,
+        "insurancePaidPercent": 95
+      },
+      {
+        "medicationName": "Cephalosporin",
+        "actualCost": 300,
+        "insurancePaidPercent": 50
+      },
+      {
+        "medicationName": "Doxycycline",
+        "actualCost": 500,
+        "insurancePaidPercent": 70
+      }
+    ],
+
+    "Costco Pharmacy": [
+      {
+        "medicationName": "Azithromycin",
+        "actualCost": 200,
+        "insurancePaidPercent": 90
+      },
+      {
+        "medicationName": "Cephalosporin",
+        "actualCost": 300,
+        "insurancePaidPercent": 70
+      },
+      {
+        "medicationName": "Doxycycline",
+        "actualCost": 500,
+        "insurancePaidPercent": 80
+      }
+    ]
+    
+  }
+  

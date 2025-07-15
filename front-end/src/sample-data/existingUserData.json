@@ -1,0 +1,43 @@
+[
+    {
+        "firstName": "Sara",
+        "middleName": "Joy",
+        "lastName": "Hill",
+        "userName": "sara",
+        "dob":"05/05/1990",
+        "email":"sara@gmail.com",
+        "contactNo":"234-456-8976",
+        "lastVistedDate":"03/03/2025",
+        "address":{
+            "street":"Main St",
+            "city":"Olathe",
+            "state":"Kansas",
+            "country":"US",
+            "zipCode":"66209"
+        },
+        "insuranceNo": 456789,
+        "insuranceType":"HMO"
+
+    },
+
+    {
+        "firstName": "John",
+        "middleName": "C",
+        "lastName": "Oliver",
+        "userName": "john",
+        "dob":"04/05/1889",
+        "email":"john@gmail.com",
+        "contactNo":"241-421-3211",
+        "lastVistedDate":"04/04/2025",
+        "address":{
+            "street":"Newton St",
+            "city":"Olathe",
+            "state":"Kansas",
+            "country":"US",
+            "zipCode":"66221"
+        },
+        "insuranceNo": 123456,
+        "insuranceType":"PPO"
+
+    }
+]
