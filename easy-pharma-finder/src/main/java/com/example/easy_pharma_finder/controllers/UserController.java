@@ -5,6 +5,7 @@ import com.example.easy_pharma_finder.models.User;
 import com.example.easy_pharma_finder.repositories.FamilyMemberRepository;
 import com.example.easy_pharma_finder.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,21 @@ public class UserController {
     private FamilyMemberRepository familyMemberRepository;
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(12);
 
+    //corresponds to url (http://localhost:8080/api/user/username)
+    @GetMapping("/username")
+    //Display the user details for the logged-in user.
+    public ResponseEntity<?> getUserDetails(@RequestParam String userName) {
+        Optional<User> userProfile  = userRepository.findByUserName(userName);
+        if (userProfile.isPresent()) {
+            User user = userProfile.get();
+            return ResponseEntity.ok(user);
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
+
+    //corresponds to url (http://localhost:8080/api/user/submit)
     @PostMapping("/submit")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         //Verify the duplicates in the user table based on "email" column.
@@ -42,11 +58,16 @@ public class UserController {
             }
         }
 
-        //store all the new user details in the user table and store the encoded password instead of plain text.
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        savedUser = userRepository.save(user);
+        try {
+            //store all the new user details in the user table and store the encoded password instead of plain text.
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            savedUser = userRepository.save(user);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+        }
+        catch(DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username or Email already exists. Please choose another.");
+        }
     }
 
 }

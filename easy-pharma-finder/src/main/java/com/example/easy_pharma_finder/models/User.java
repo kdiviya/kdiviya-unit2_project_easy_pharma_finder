@@ -1,5 +1,6 @@
 package com.example.easy_pharma_finder.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -15,11 +16,17 @@ public class User {
     private String firstName;
     private String middleName;
     private String lastName;
-    private String userName;
-    private LocalDate dob;
 
+    @Column(nullable = false, unique = true)
+    private String userName;
+
+    private LocalDate dob;
+    @JsonIgnore
     private String password;
+
+    @Column(nullable = false, unique = true)
     private String email;
+
     private String contactNo;
     private LocalDate lastVisitedDate;
 
