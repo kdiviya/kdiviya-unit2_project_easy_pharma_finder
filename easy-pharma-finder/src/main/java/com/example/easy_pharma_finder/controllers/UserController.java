@@ -70,11 +70,13 @@ public class UserController {
         }
     }
 
+    //corresponds to url (http://localhost:8080/api/user//existingUser/{userId}/addFamilyMember")
     @PostMapping("/existingUser/{userId}/addFamilyMember")
+    //Add new family member for the existing user
     public ResponseEntity<?> addFamilyMember(@PathVariable int userId, @RequestBody List<FamilyMember> familyMembers) {
         Optional<User> userExist = userRepository.findById(userId);
-        //System.out.println("UserExist" +userExist);
 
+        //verify the userid exist on the user repository. if so, add all the new family members to the family_member table
         if(userExist.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
