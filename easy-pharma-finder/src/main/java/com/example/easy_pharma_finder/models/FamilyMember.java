@@ -68,5 +68,16 @@ public class FamilyMember {
     public void setUser(User user) {
         this.user = user;
     }
+
+    @Override
+    public String toString() {
+        return "FamilyMember{" +
+
+                ", name='" + name + '\'' +
+                ", dob=" + dob +
+                ", relationship='" + relationship + '\'' +
+                ", user=" + (user != null ? user.getUserName() : "null") +
+                '}';
+    }
 }
 

@@ -21,7 +21,7 @@ public class User {
     private String userName;
 
     private LocalDate dob;
-    @JsonIgnore
+
     private String password;
 
     @Column(nullable = false, unique = true)
@@ -228,5 +228,31 @@ public class User {
 
     public void setIsFamilyMember(Boolean familyMember) {
         isFamilyMember = familyMember;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", userName='" + userName + '\'' +
+                ", dob=" + dob +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", contactNo='" + contactNo + '\'' +
+                ", lastVisitedDate=" + lastVisitedDate +
+                ", street='" + street + '\'' +
+                ", country='" + country + '\'' +
+                ", city='" + city + '\'' +
+                ", state='" + state + '\'' +
+                ", zipCode='" + zipCode + '\'' +
+                ", insuranceProvider='" + insuranceProvider + '\'' +
+                ", insuranceType='" + insuranceType + '\'' +
+                ", insuranceNumber='" + insuranceNumber + '\'' +
+                ", isFamilyMember=" + isFamilyMember +
+                ", familyMembers=" + familyMembers +
+                '}';
     }
 }
