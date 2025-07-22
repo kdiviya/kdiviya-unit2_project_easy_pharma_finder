@@ -41,11 +41,12 @@ public class UserController {
 
     //corresponds to url (http://localhost:8080/api/user/submit)
     @PostMapping("/submit")
+    //Add the new user details into the users and family_members tables.
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         //Verify the duplicates in the user table based on "email" column.
         Optional<User> existingUser = userRepository.findByEmail((user.getEmail()));
         User savedUser;
-        //Check if user already exist with same email, display the message.Else create new user.
+        //Check if user already exist with same email, display the message. Else create new user.
         if (existingUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with same email already exist");
         }
@@ -81,20 +82,26 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
 
+        //If the user add more than one family members, iterate the loop and assign all of them in setUser().
         User userDetails = userExist.get();
         for (FamilyMember fm : familyMembers) {
             fm.setUser(userDetails);
         }
 
+        //Store all the family members in the family member repository.
         List<FamilyMember> savedFamilyMember = familyMemberRepository.saveAll(familyMembers);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedFamilyMember);
     }
 
+
+    //corresponds to url (http://localhost:8080/api/user/updateUser
     @PutMapping("/updateUser")
+    //update the existing user and family member's details
     public ResponseEntity<?> updateUserDetails(@RequestBody User user) {
         Optional<User> existUser = userRepository.findByUserName(user.getUserName());
         User savedUser;
 
+        //Check if the user exist based on the username. If exists, store the updated values in savedUser.
         if (existUser.isPresent()) {
             savedUser = existUser.get();
             savedUser.setFirstName(user.getFirstName());
@@ -115,26 +122,29 @@ public class UserController {
             savedUser.setInsuranceType(user.getInsuranceType());
             savedUser.setIsFamilyMember(user.getIsFamilyMember());
 
+            //Store the updated password (if any) in encoded format.
             if (user.getPassword()!= null) {
                 savedUser.setPassword(passwordEncoder.encode(user.getPassword()));
             }
 
+            //Verify if family members exist for the existing user.
             if (user.getFamilyMembers()!=null) {
-                System.out.println("request" +user.getFamilyMembers());
+
+                //Iterate over all the family members, based on the id - it updates the family member details.
                 for (FamilyMember familyMember : user.getFamilyMembers()) {
                     Optional<FamilyMember> existingFamilyMember = familyMemberRepository.findById(familyMember.getId());
-                    System.out.println("From DB:" +existingFamilyMember);
+
                     if (existingFamilyMember.isPresent()) {
                             FamilyMember existing = existingFamilyMember.get();
                             existing.setName(familyMember.getName());
                             existing.setDob(familyMember.getDob());
                             existing.setRelationship(familyMember.getRelationship());
                             existing.setUser(savedUser);
-                            System.out.println("user table:" +savedUser);
                             familyMemberRepository.save(existing);
-                            System.out.println("Famil Member table:" +existing);
 
-                    } else {
+                    }
+
+                    else {
                         familyMember.setUser(savedUser);
                         familyMemberRepository.save(familyMember);
                     }
@@ -150,9 +160,12 @@ public class UserController {
         }
     }
 
+    //corresponds to url (http://localhost:8080/api/user/deleteFamilyMember
     @DeleteMapping("/deleteFamilyMember")
+    //To delete the existing family member based on the family member id.
     public ResponseEntity<?> deleteFamilMember(@RequestBody List<Integer> familyMemberId) {
 
+        //Using findAllById, find all id's of the family members going to be deleted
         List<FamilyMember> familyMember =  familyMemberRepository.findAllById(familyMemberId);
 
         if (familyMember.isEmpty()) {
@@ -163,8 +176,6 @@ public class UserController {
             familyMemberRepository.deleteAll(familyMember);
             return ResponseEntity.ok("Family Member/s deleted successfully");
         }
-
-
     }
 
 }
