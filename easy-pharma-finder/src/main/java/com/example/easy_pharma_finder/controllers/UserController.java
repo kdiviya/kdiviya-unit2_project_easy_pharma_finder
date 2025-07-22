@@ -88,11 +88,10 @@ public class UserController {
 
         List<FamilyMember> savedFamilyMember = familyMemberRepository.saveAll(familyMembers);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedFamilyMember);
-
     }
 
     @PutMapping("/updateUser")
-    public ResponseEntity<?> updateUserDetails(@RequestBody  User user) {
+    public ResponseEntity<?> updateUserDetails(@RequestBody User user) {
         Optional<User> existUser = userRepository.findByUserName(user.getUserName());
         User savedUser;
 
@@ -123,11 +122,10 @@ public class UserController {
             if (user.getFamilyMembers()!=null) {
                 System.out.println("request" +user.getFamilyMembers());
                 for (FamilyMember familyMember : user.getFamilyMembers()) {
-                    List<FamilyMember> existingFamilyMember = familyMemberRepository.findById(familyMember.getId());
+                    Optional<FamilyMember> existingFamilyMember = familyMemberRepository.findById(familyMember.getId());
                     System.out.println("From DB:" +existingFamilyMember);
-                    if (!existingFamilyMember.isEmpty()) {
-                        for (FamilyMember existing : existingFamilyMember) {
-
+                    if (existingFamilyMember.isPresent()) {
+                            FamilyMember existing = existingFamilyMember.get();
                             existing.setName(familyMember.getName());
                             existing.setDob(familyMember.getDob());
                             existing.setRelationship(familyMember.getRelationship());
@@ -135,7 +133,7 @@ public class UserController {
                             System.out.println("user table:" +savedUser);
                             familyMemberRepository.save(existing);
                             System.out.println("Famil Member table:" +existing);
-                        }
+
                     } else {
                         familyMember.setUser(savedUser);
                         familyMemberRepository.save(familyMember);
@@ -150,6 +148,23 @@ public class UserController {
         else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User details not found");
         }
+    }
+
+    @DeleteMapping("/deleteFamilyMember")
+    public ResponseEntity<?> deleteFamilMember(@RequestBody List<Integer> familyMemberId) {
+
+        List<FamilyMember> familyMember =  familyMemberRepository.findAllById(familyMemberId);
+
+        if (familyMember.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Content not found");
+        }
+
+        else {
+            familyMemberRepository.deleteAll(familyMember);
+            return ResponseEntity.ok("Family Member/s deleted successfully");
+        }
+
+
     }
 
 }

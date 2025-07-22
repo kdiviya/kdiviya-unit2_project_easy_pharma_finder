@@ -11,6 +11,5 @@ import java.util.List;
 
 @Repository
 public interface FamilyMemberRepository extends JpaRepository<FamilyMember, Integer> {
-    //Select all the values from the family_member table based on name,relationship, dob,
-    List<FamilyMember> findById(int id);
+
 }

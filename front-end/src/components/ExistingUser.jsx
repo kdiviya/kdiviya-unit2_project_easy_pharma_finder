@@ -11,7 +11,7 @@ const ExistingUser = () => {
     //create a variable for useNavigate and useLocation
     const navigate = useNavigate();
     const location = useLocation();
-    const user  = location.state.foundUser; //Assign the logged user details whic is passed from "LoginInfo.jsx" to "user".
+    const user  = location.state.foundUser; //Assign the logged user details which is passed from "LoginInfo.jsx" to "user".
     let name = `${user.firstName} ${user.middleName} ${user.lastName}`;
     
     //Verify the logged user authentication
