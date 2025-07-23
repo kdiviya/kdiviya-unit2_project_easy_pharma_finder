@@ -12,23 +12,19 @@ public class Medication {
 
     private String medicationName;
     private BigDecimal actualCost;
-    private BigDecimal insurancePaidPercent;
+
 
     @Column(name="fk_family_member_id")
-    private int familyMemberId;
-    private BigDecimal copay;
+    private Integer familyMemberId;
 
     public Medication() {
     }
 
-    public Medication(int id, String medicationName, BigDecimal actualCost, BigDecimal insurancePaidPercent, int familyMemberId, BigDecimal copay) {
+    public Medication(int id, String medicationName, BigDecimal actualCost, Integer familyMemberId) {
         this.id = id;
         this.medicationName = medicationName;
         this.actualCost = actualCost;
-        this.insurancePaidPercent = insurancePaidPercent;
-
         this.familyMemberId = familyMemberId;
-        this.copay = copay;
     }
 
     public int getId() {
@@ -55,28 +51,21 @@ public class Medication {
         this.actualCost = actualCost;
     }
 
-    public BigDecimal getInsurancePaidPercent() {
-        return insurancePaidPercent;
-    }
-
-    public void setInsurancePaidPercent(BigDecimal insurancePaidPercent) {
-        this.insurancePaidPercent = insurancePaidPercent;
-    }
-
-
-    public int getFamilyMemberId() {
+    public Integer getFamilyMemberId() {
         return familyMemberId;
     }
 
-    public void setFamilyMemberId(int familyMemberId) {
+    public void setFamilyMemberId(Integer familyMemberId) {
         this.familyMemberId = familyMemberId;
     }
 
-    public BigDecimal getCopay() {
-        return copay;
-    }
-
-    public void setCopay(BigDecimal copay) {
-        this.copay = copay;
+    @Override
+    public String toString() {
+        return "Medication{" +
+                "id=" + id +
+                ", medicationName='" + medicationName + '\'' +
+                ", actualCost=" + actualCost +
+                ", familyMemberId=" + familyMemberId +
+                '}';
     }
 }

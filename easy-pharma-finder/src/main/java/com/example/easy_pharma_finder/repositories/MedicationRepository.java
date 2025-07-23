@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface MedicationRepository extends JpaRepository<Medication, Integer> {
     List<Medication> findByFamilyMemberId(Integer familyMemberId);
+    List<Medication> findTop2ByFamilyMemberIdIsNull();
+
 }
