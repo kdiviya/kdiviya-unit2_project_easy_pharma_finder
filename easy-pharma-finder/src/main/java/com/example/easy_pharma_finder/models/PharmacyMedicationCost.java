@@ -1,68 +1,55 @@
 package com.example.easy_pharma_finder.models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 import java.math.BigDecimal;
 
+@Entity
 public class PharmacyMedicationCost {
 
-    private String pharmacyName;
-    private String MedicationName;
-    private int userId;
-    private String userName;
-    private double actualCost;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    private int pharmacyId;
+    private int medicationId;
     private double insurancePaidPercent;
-    private double totalCost;
+
 
     public PharmacyMedicationCost() {
     }
 
-    public PharmacyMedicationCost(String pharmacyName, String medicationName, int userId, String userName, double actualCost, double insurancePaidPercent, double totalCost) {
-        this.pharmacyName = pharmacyName;
-        MedicationName = medicationName;
-        this.userId = userId;
-        this.userName = userName;
-        this.actualCost = actualCost;
+    public PharmacyMedicationCost(int id, int pharmacyId, int medicationId, double insurancePaidPercent) {
+        this.id = id;
+        this.pharmacyId = pharmacyId;
+        this.medicationId = medicationId;
         this.insurancePaidPercent = insurancePaidPercent;
-        this.totalCost = totalCost;
     }
 
-    public String getPharmacyName() {
-        return pharmacyName;
+    public int getId() {
+        return id;
     }
 
-    public void setPharmacyName(String pharmacyName) {
-        this.pharmacyName = pharmacyName;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getMedicationName() {
-        return MedicationName;
+    public int getPharmacyId() {
+        return pharmacyId;
     }
 
-    public void setMedicationName(String medicationName) {
-        MedicationName = medicationName;
+    public void setPharmacyId(int pharmacyId) {
+        this.pharmacyId = pharmacyId;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getMedicationId() {
+        return medicationId;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public double getActualCost() {
-        return actualCost;
-    }
-
-    public void setActualCost(double actualCost) {
-        this.actualCost = actualCost;
+    public void setMedicationId(int medicationId) {
+        this.medicationId = medicationId;
     }
 
     public double getInsurancePaidPercent() {
@@ -71,13 +58,5 @@ public class PharmacyMedicationCost {
 
     public void setInsurancePaidPercent(double insurancePaidPercent) {
         this.insurancePaidPercent = insurancePaidPercent;
-    }
-
-    public double getTotalCost() {
-        return totalCost;
-    }
-
-    public void setTotalCost(double totalCost) {
-        this.totalCost = totalCost;
     }
 }

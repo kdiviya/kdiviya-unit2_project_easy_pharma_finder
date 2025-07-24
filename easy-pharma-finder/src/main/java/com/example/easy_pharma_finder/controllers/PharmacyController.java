@@ -26,7 +26,7 @@ public class PharmacyController {
     @Autowired
     private PharmacyRepository pharmacyRepository;
 
-    @GetMapping("/pharmacy")
+    @GetMapping("/pharmacy-details")
     public ResponseEntity<?> getPharmacyDetails(@RequestParam String userName) {
         Optional<User> user = userRepository.findByUserName(userName);
         List<String> pharmacyNames = new ArrayList<>();
