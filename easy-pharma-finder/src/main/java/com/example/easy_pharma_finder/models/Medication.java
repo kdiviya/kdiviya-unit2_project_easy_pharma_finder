@@ -2,8 +2,6 @@ package com.example.easy_pharma_finder.models;
 
 import jakarta.persistence.*;
 
-import java.math.BigDecimal;
-
 @Entity
 public class Medication {
     @Id
@@ -11,7 +9,7 @@ public class Medication {
     private int id;
 
     private String medicationName;
-    private BigDecimal actualCost;
+    private double actualCost;
 
 
     @Column(name="fk_family_member_id")
@@ -20,7 +18,7 @@ public class Medication {
     public Medication() {
     }
 
-    public Medication(int id, String medicationName, BigDecimal actualCost, Integer familyMemberId) {
+    public Medication(int id, String medicationName, double actualCost, Integer familyMemberId) {
         this.id = id;
         this.medicationName = medicationName;
         this.actualCost = actualCost;
@@ -43,11 +41,11 @@ public class Medication {
         this.medicationName = medicationName;
     }
 
-    public BigDecimal getActualCost() {
+    public double getActualCost() {
         return actualCost;
     }
 
-    public void setActualCost(BigDecimal actualCost) {
+    public void setActualCost(double actualCost) {
         this.actualCost = actualCost;
     }
 

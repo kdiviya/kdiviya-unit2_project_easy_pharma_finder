@@ -83,4 +83,17 @@ public class Pharmacy {
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
+
+    @Override
+    public String toString() {
+        return "Pharmacy{" +
+                "id=" + id +
+                ", pharmacyName='" + pharmacyName + '\'' +
+                ", Address='" + Address + '\'' +
+                ", city='" + city + '\'' +
+                ", State='" + State + '\'' +
+                ", Country='" + Country + '\'' +
+                ", zipCode='" + zipCode + '\'' +
+                '}';
+    }
 }
