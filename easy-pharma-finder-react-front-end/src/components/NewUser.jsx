@@ -78,6 +78,9 @@ const NewUser = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         setIsformVisible(!isFormVisible);    
+        try {
+            
+        }
     }
 
     return (
