@@ -1,9 +1,6 @@
 package com.example.easy_pharma_finder.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 
@@ -13,18 +10,23 @@ public class PharmacyMedicationCost {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int pharmacyId;
-    private int medicationId;
-    private double insurancePaidPercent;
+    @ManyToOne
+    @JoinColumn(name = "pharmacy_id")
+    private Pharmacy pharmacy;
 
+    @ManyToOne
+    @JoinColumn(name = "medication_id")
+    private Medication medication;
+
+    private double insurancePaidPercent;
 
     public PharmacyMedicationCost() {
     }
 
-    public PharmacyMedicationCost(int id, int pharmacyId, int medicationId, double insurancePaidPercent) {
+    public PharmacyMedicationCost(int id, Pharmacy pharmacy, Medication medication, double insurancePaidPercent) {
         this.id = id;
-        this.pharmacyId = pharmacyId;
-        this.medicationId = medicationId;
+        this.pharmacy = pharmacy;
+        this.medication = medication;
         this.insurancePaidPercent = insurancePaidPercent;
     }
 
@@ -36,20 +38,20 @@ public class PharmacyMedicationCost {
         this.id = id;
     }
 
-    public int getPharmacyId() {
-        return pharmacyId;
+    public Pharmacy getPharmacy() {
+        return pharmacy;
     }
 
-    public void setPharmacyId(int pharmacyId) {
-        this.pharmacyId = pharmacyId;
+    public void setPharmacy(Pharmacy pharmacy) {
+        this.pharmacy = pharmacy;
     }
 
-    public int getMedicationId() {
-        return medicationId;
+    public Medication getMedication() {
+        return medication;
     }
 
-    public void setMedicationId(int medicationId) {
-        this.medicationId = medicationId;
+    public void setMedication(Medication medication) {
+        this.medication = medication;
     }
 
     public double getInsurancePaidPercent() {
