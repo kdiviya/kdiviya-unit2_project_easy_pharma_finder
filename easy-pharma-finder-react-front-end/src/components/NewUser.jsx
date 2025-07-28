@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
 import ReusableButton from './ReusableButton';
+import { add } from 'date-fns';
 
 //Displays the new user form and store the user's details dynamically.
 const NewUser = () => {
@@ -100,58 +101,86 @@ const NewUser = () => {
        
     };
 
-    const handleAddFamilyMember = () => {
+    const handleAddFamilyMember = (e) => {
+        //Check if the user has entered all the family member details.
+        const button = e.target.name; //Get the button id to check which button is clicked.
+
             if (!familyMember.name || !familyMember.relationship || !familyMember.dob) {
                 setMessage({
                     "message":"Please fill all the family member details.",
-                    "status":"success"
+                    "status":"error"
                 });
                 return;
-              }
-            setUser((currentVal) => ({
-                ...currentVal,
-                familyMembers: [...currentVal.familyMembers, familyMember] //Add the family member details to the user state variable.
-            }));
-            setFamilyMember({ //Update the family member details to the state variable "familyMember".
-                name:'',
-                relationship:'',
-                dob:'',
-            });
-            if (user.familyMembers.length === 0 && familyMember.relationship !== "Self") {
+            }
+
+            //If the user clicks the "Add Family Member" button, then display the success message
+            if(button === "add-family-member") {
+
+                setUser((currentVal) => ({
+                    ...currentVal,
+                    familyMembers: [...currentVal.familyMembers, familyMember] //Add the family member details to the user state variable.
+                }));
+            
+                //Reset the family member details to null.
+                setFamilyMember({
+                    name:'',
+                    relationship:'',
+                    dob:'',
+                });
+            
                 setMessage({
-                    "message":"Please add your name as family member with relationship 'Self'.",
+                    "message":"Family member added successfully!",
                     "status":"success"
                 });
-                return;
-            }         
+            }
+
+            setTimeout(() => {
+                setMessage(null); //Reset the message after 3 seconds.
+            }, 3000);
+                   
         }
 
         const handleRemoveFamilyMember = () => {
+
             setUser((currentVal) => ({
                 ...currentVal,
                 familyMembers: currentVal.familyMembers.filter((member) => !member.isChecked) //Filter the family members based on the checkbox checked state)
             }));
+
             setMessage({
                 "message":"Family member removed successfully!",
                 "status":"success"
             });
+
+            setTimeout(() => {
+                setMessage(null); //Reset the message after 3 seconds.
+            }, 3000);
+       
         }
     
 
     //It triggers, when the user click the submit button.
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         //Check if the user has added at least one family member.
-        if (user.familyMembers.length === 0 && !user.familyMembers.some(member => member.relationship === "Self")) {    
+        if (user.familyMembers.length === 0 ) {    
             setMessage({
                 "message":"Please add at least one family member before submitting.",
                 "status":"error"
             });
-           // return;
-      
-       // console.log('Submitting user data:', JSON.stringify(user));
-
-    }   
+            return
+        }
+        
+        //Check if the user has added himself/herself as a family member.
+        if (!user.familyMembers.some(member => member.relationship === "Self")) {
+            setMessage({
+                "message":`Please add your name as family member with realtionship "Self" before submitting the form.`,
+                "status":"error"
+            });
+            return;
+        }
+       
         try {
             const response = await fetch('http://localhost:8080/api/user/submit', {
 				method: 'POST',
@@ -160,19 +189,18 @@ const NewUser = () => {
 				},
 				body: JSON.stringify(user),
 			});
+
             if(!response.ok) {
                 throw new Error('Failed to submit the form. Please try again later.');
             }
+
             const data = await response.json();
-            console.log('Form submitted successfully:', data);
             setIsformVisible(false);   
-		} catch (error) {
+		} 
+        catch (error) {
 			console.error(error.message);
         }
-
     
-        
-              
     };
 
     return (
@@ -199,10 +227,10 @@ const NewUser = () => {
                         <input type="date" id="dob" name="dob" value={user.dob} onChange={handleInputChange} required></input>
 
                         <label>Enter your user name *</label>
-                        <input type="text" id="userName" name="userName" value={user.userName} onChange={handleInputChange} required></input>
+                        <input type="text" id="userName" name="userName" value={user.userName} onChange={handleInputChange} autoComplete="userName" required></input>
 
                         <label>Enter your password *</label>
-                        <input type="password" id="password" name="password" value={user.password} onChange={handleInputChange} pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$"
+                        <input type="password" id="password" name="password" value={user.password} onChange={handleInputChange} autoComplete="password" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$"
                             title="Password must be at least 5 characters, include an uppercase letter, a number, and a special character." required></input>
                             
                         <label>Enter your email address</label>
@@ -257,7 +285,7 @@ const NewUser = () => {
                             <legend>Please select insurance type *</legend>
 
                             <div className="radio-container">
-                                <input type="radio" id="ppm" name="insuranceType" value="PPM" checked={user.insuranceType === "PPM"} onChange={handleInputChange} required></input>
+                                <input type="radio" id="ppo" name="insuranceType" value="PPO" checked={user.insuranceType === "PPO"} onChange={handleInputChange} required></input>
                                 <label>PPO</label>
                                 
                                 <input type="radio" id="hmo" name="insuranceType" value="HMO" checked={user.insuranceType === "HMO"} onChange={handleInputChange} required></input>
@@ -281,7 +309,7 @@ const NewUser = () => {
                             <option value='Other'>Other</option>
                         </select>
                         <label>DOB</label>
-                        <input type="date" id="dob" name="dob" value={familyMember.dob} onChange={handleMemberChange} ></input>
+                        <input type="date" id="family-dob" name="dob" value={familyMember.dob} onChange={handleMemberChange} ></input>
 
                         <div>
                             <ReusableButton id="add-family-member" type="button" name="add-family-member" onClick={handleAddFamilyMember}>Add Family Member</ReusableButton>
