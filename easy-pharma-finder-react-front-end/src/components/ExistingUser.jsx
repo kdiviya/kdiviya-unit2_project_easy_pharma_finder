@@ -1,5 +1,5 @@
 import { useLocation,useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import ReusableButton from './ReusableButton';
@@ -8,48 +8,37 @@ import './css/existing-user.css';
 //Display the profile details when the existing user logged-in.
 const ExistingUser = () => {
     
+    const [familyMembers, setFamilyMembers] = useState([]);
     //create a variable for useNavigate and useLocation
     const navigate = useNavigate();
     const location = useLocation();
-    const user  = location.state.foundUser; //Assign the logged user details which is passed from "LoginInfo.jsx" to "user".
-    let name = `${user.firstName} ${user.middleName} ${user.lastName}`;
-    
-    //Verify the logged user authentication
-    if(!user) {
-        return <p>Incorrect Incredentials. Please try again!!!</p>;
-    }
+    const user  = location.state.userName; //Assign the logged user details which is passed from "LoginInfo.jsx" to "user".
 
-    //create state variable for to store the logged user details.
-    const[loggedUser, setLoggedUser] = useState(user);
 
-    //create state variable for displayning Edit/Save button
-    const [isEdit, setIsEdit] = useState(false);
-    
-    //if the user edit the address or contact number, the value is updated to loggedUser state variable.
-    const handleChange = (e) => {
-        const { name, value } = e.target;
+    useEffect(() => { 
+        const fetchFamilyMembers = async () => { 
+       
+            try {
+                const response = await fetch(`http://localhost:8080/api/user/existingUser/${user}/family-members`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                   
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to fetch user data");
+                }
+                const data = await response.json();
+                setFamilyMembers(data);
+                
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        
+        };
 
-        //Assign the updated value(street, city, zipcode) to the loggedUser.address[]
-        if(['street', 'city', 'zipCode'].includes(name)) {
-            setLoggedUser((currentVal) => ({
-                ...currentVal,
-                address : {
-                    ...currentVal.address,
-                    [name]:value,
-                },
-               
-            }));
-        }
-
-        //Assign the updated contact number to loggedUser
-        else {
-            setLoggedUser((currentVal) => ({
-                ...currentVal,
-                [name]:value,
-    
-            }));
-        }
-    }
+        if(user) fetchFamilyMembers();
+    }, []);
+   
 
     return(
         <div className="container">
@@ -57,42 +46,18 @@ const ExistingUser = () => {
             <div className="content">
                 
                 <div className="profile">
-                    <h2 className="h2-animation">Profile Details</h2>
-                    <p>Name:<span>{name}</span></p>
-                    <p>Insurance Number:<span>{loggedUser.insuranceNo}</span></p>
-                    <p>Insurance Type:<span>{loggedUser.insuranceType}</span></p>
-                    <p>Hospital Visted Date:<span>{loggedUser.lastVistedDate}</span></p>
-
-                    {   isEdit ? 
-                            <div className="edit-details">
-                                <label>Contact Number:</label>
-                                <span><input name="contactNo" value={loggedUser.contactNo} onChange={handleChange} /></span>
-
-                                <label>Street Name:</label>
-                                <span><input name="street"  value={loggedUser.address.street} onChange={handleChange}/></span>
-
-                                <label>City:</label>
-                                <span><input name="city"  value={loggedUser.address.city} onChange={handleChange} /></span>
-
-                                <label>Zipcode:</label>
-                                <span><input name="zipCode"  value={loggedUser.address.zipCode} onChange={handleChange} /></span>
-
-                                <ReusableButton id="save-button" type="button" onClick={() => setIsEdit(false)}>Save Details</ReusableButton>
-                            </div>
-                        :
-                        <>
-                            <p>Contact Number:<span>{loggedUser.contactNo}</span></p>
-                            <p>Address:<span>{loggedUser.address.street}, {loggedUser.address.city} - {loggedUser.address.zipCode}</span></p>
-                            <div className="edit-view-button">
-                                <ReusableButton id="edit-button" type="button" onClick={() => setIsEdit(true)}>Edit Details</ReusableButton>
-                                <ReusableButton id= "view-button" type ="button" onClick = { 
-                                                                                 () => (navigate('/pharma-finder', {state:{loggedUser}}))
-                                                                                }
-                                >Pharmacy Finder
-                                </ReusableButton>
-                            </div>
-                        </>
-                    }
+                    <h2 className="h2-animation">Medication</h2>
+                    <ul>
+                        {[...familyMembers]
+                        .sort((a,b) => (a.relationship === "self"? -1 : 1)) // Sort so that self is always first
+                        .map(member => {
+                            return <li key = {member.id}
+                                className="family-member">
+                                <p>{member.relationship === "self"? `Primary User - ${member.name}`: `${member.name}`}</p>
+                            </li> }
+                        )}
+                               
+                    </ul>
                 </div>
 
             </div>
