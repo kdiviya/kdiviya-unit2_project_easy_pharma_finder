@@ -45,6 +45,7 @@ public class UserController {
         //Verify the duplicates in the user table based on "email" column.
         Optional<User> existingUser = userRepository.findByEmail((user.getEmail()));
         User savedUser;
+
         //Check if user already exist with same email, display the message. Else create new user.
         if (existingUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with same email already exist");
@@ -70,7 +71,7 @@ public class UserController {
         }
     }
 
-    //corresponds to url (http://localhost:8080/api/user//existingUser/{userId}/addFamilyMember")
+    //corresponds to url (http://localhost:8080/api/user/existingUser/{userId}/addFamilyMember")
     @PostMapping("/existingUser/{userId}/addFamilyMember")
     //Add new family member for the existing user
     public ResponseEntity<?> addFamilyMember(@PathVariable int userId, @RequestBody List<FamilyMember> familyMembers) {
