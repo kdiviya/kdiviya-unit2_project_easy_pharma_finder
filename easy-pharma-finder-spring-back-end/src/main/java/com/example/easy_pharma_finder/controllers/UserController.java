@@ -110,7 +110,6 @@ public class UserController {
             savedUser.setDob(user.getDob());
             savedUser.setEmail(user.getEmail());
             savedUser.setContactNo(user.getContactNo());
-            savedUser.setLastVisitedDate(user.getLastVisitedDate());
             savedUser.setStreet(user.getStreet());
             savedUser.setCity(user.getCity());
             savedUser.setCountry(user.getCountry());
@@ -119,7 +118,7 @@ public class UserController {
             savedUser.setInsuranceNumber(user.getInsuranceNumber());
             savedUser.setInsuranceProvider(user.getInsuranceProvider());
             savedUser.setInsuranceType(user.getInsuranceType());
-            savedUser.setIsFamilyMember(user.getIsFamilyMember());
+
 
             //Store the updated password (if any) in encoded format.
             if (user.getPassword()!= null) {

@@ -2,6 +2,7 @@ package com.example.easy_pharma_finder.controllers;
 
 import com.example.easy_pharma_finder.models.User;
 import com.example.easy_pharma_finder.repositories.UserRepository;
+import jakarta.persistence.GeneratedValue;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class LoginController {
     private UserRepository userRepository;
 
     //used BCryptPasswordEncoder class from the spring security library for storing password in encoded format instead of plain text
-    private BCryptPasswordEncoder passwordEncoder  = new BCryptPasswordEncoder(12);
+    private BCryptPasswordEncoder passwordEncoder  = new BCryptPasswordEncoder(10);
 
     //corresponds to api end point (http://localhost:8080/api/user/login)
     @PostMapping("/login")
@@ -44,8 +45,20 @@ public class LoginController {
             }
             //If the user not exists, display the message "Not Authorized user".
             else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not Authorized user");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized user");
             }
+    }
+
+    @GetMapping("/getSession")
+    public ResponseEntity<?> getSession(HttpServletRequest httpServletRequest) {
+        HttpSession session = httpServletRequest.getSession(true);
+        if (session != null) {
+            String username = (String) session.getAttribute("user");
+            if (username != null) {
+                return ResponseEntity.ok("Logged in " +username);
+            }
+        }
+       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Session timedout");
     }
 
 }

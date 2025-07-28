@@ -27,8 +27,6 @@ public class User {
     private String email;
 
     private String contactNo;
-    private LocalDate lastVisitedDate;
-
     private String street;
     private String country;
     private String city;
@@ -39,13 +37,11 @@ public class User {
     private String insuranceType;
     private String insuranceNumber;
 
-    private Boolean isFamilyMember;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<FamilyMember> familyMembers;
 
-    public User(int id, String firstName, String middleName, String lastName, String userName, LocalDate dob, String password, String email, String contactNo, LocalDate lastVisitedDate, String street, String country, String city, String state, String zipCode, String insuranceProvider, String insuranceType, String insuranceNumber, Boolean isFamilyMember) {
+    public User(int id, String firstName, String middleName, String lastName, String userName, LocalDate dob, String password, String email, String contactNo, String street, String country, String city, String state, String zipCode, String insuranceProvider, String insuranceType, String insuranceNumber) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -55,7 +51,6 @@ public class User {
         this.password = password;
         this.email = email;
         this.contactNo = contactNo;
-        this.lastVisitedDate = lastVisitedDate;
         this.street = street;
         this.country = country;
         this.city = city;
@@ -64,7 +59,6 @@ public class User {
         this.insuranceProvider = insuranceProvider;
         this.insuranceType = insuranceType;
         this.insuranceNumber = insuranceNumber;
-        this.isFamilyMember = isFamilyMember;
     }
 
     public User() {}
@@ -141,14 +135,6 @@ public class User {
         this.contactNo = contactNo;
     }
 
-    public LocalDate getLastVisitedDate() {
-        return lastVisitedDate;
-    }
-
-    public void setLastVisitedDate(LocalDate lastVisitedDate) {
-        this.lastVisitedDate = lastVisitedDate;
-    }
-
     public String getStreet() {
         return street;
     }
@@ -221,14 +207,6 @@ public class User {
         this.familyMembers = familyMembers;
     }
 
-    public Boolean getIsFamilyMember() {
-        return isFamilyMember;
-    }
-
-    public void setIsFamilyMember(Boolean familyMember) {
-        isFamilyMember = familyMember;
-    }
-
     @Override
     public String toString() {
         return "User{" +
@@ -241,7 +219,6 @@ public class User {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", contactNo='" + contactNo + '\'' +
-                ", lastVisitedDate=" + lastVisitedDate +
                 ", street='" + street + '\'' +
                 ", country='" + country + '\'' +
                 ", city='" + city + '\'' +
@@ -250,7 +227,6 @@ public class User {
                 ", insuranceProvider='" + insuranceProvider + '\'' +
                 ", insuranceType='" + insuranceType + '\'' +
                 ", insuranceNumber='" + insuranceNumber + '\'' +
-                ", isFamilyMember=" + isFamilyMember +
                 ", familyMembers=" + familyMembers +
                 '}';
     }
