@@ -25,17 +25,28 @@ const NewUser = () => {
         middleName: "",
         lastName: "",
         dob:"",
+        userName:"",
+        password:"",
         email:"",
-        phoneNumber:"",
-        visitedDate:"",
-        streetName:"",
+        contactNo:"",
+        street:"",
         country:"",
         state:"",
         city:"",
         zipCode:"",
+        insuranceProvider:"",
+        familyMembers: [],
         insuranceNumber:"",
         insuranceType:""
     });
+
+    //Create a state variable to store the family member details 
+    const [familyMember, setFamilyMember] = useState({
+        name: "",
+        relationship: "",
+        dob: ""});
+
+    const [message, setMessage] = useState(null); //State variable to store error messages.
 
     //Update the state variable when the user enter's the data in the form.
     const handleInputChange = (e) => {
@@ -47,41 +58,122 @@ const NewUser = () => {
         }));
 
     };
+    //Update the state variable when the user enter's the family member details.
+    const handleMemberChange = (e) => { 
+        const { name, value } = e.target; //Assign the name and value of the HTMl element.
+        setFamilyMember((currentVal) => ({ //Update the family member details to the state variable "familyMember".
+            ...currentVal,
+            [name]:value
+        }));
+    };
 
    //When the user selects the country, all the states of that country is displayed
    const handleCountryChange = (e) => {
-
-        const userSelectedCountry = countries.find((country) => country.name === e.target.value);   
-        setSelectedCountry(userSelectedCountry);
+    
+        const userSelectedCountry = e.target.value;
+        const SelectedCountryObj = countries.find((country) => country.name === userSelectedCountry); //Get the country object based on the user selected country name.
+       
         setUser((currentVal) => ({
             ...currentVal,
             country:userSelectedCountry
         }));
-
-        const stateList = State.getStatesOfCountry(userSelectedCountry.isoCode);
-        setStates(stateList); //It update the state variable "states" to the states based on the user selected country code.
+        setSelectedCountry(userSelectedCountry);
+        if (SelectedCountryObj) {
+            const stateList = State.getStatesOfCountry(SelectedCountryObj.isoCode);
+            setStates(stateList); //It update the state variable "states" to the states based on the user selected country code.
+        }
+        else {
+            setStates([]); //If the user selects the country, then reset the states to empty array.
+        }
+    
     };
 
     //When the user selects the state, update the user's state name.
     const handleStateChange = (e) => {
-        const userSelectedState = states.find((state) => state.name === e.target.value);//Get the details(ie state object) of user selected state value.
+        const userSelectedState = e.target.value; //Get the user selected state name.
 
         //updates the state variable "user" when the user selects the state
         setUser((currentVal) => ({
             ...currentVal,
-            state:(userSelectedState ? userSelectedState.name: "")
+            state:userSelectedState
         }));
        
     };
 
-    //It triggers, when the user click the submit button.
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setIsformVisible(!isFormVisible);    
-        try {
-            
+    const handleAddFamilyMember = () => {
+            if (!familyMember.name || !familyMember.relationship || !familyMember.dob) {
+                setMessage({
+                    "message":"Please fill all the family member details.",
+                    "status":"success"
+                });
+                return;
+              }
+            setUser((currentVal) => ({
+                ...currentVal,
+                familyMembers: [...currentVal.familyMembers, familyMember] //Add the family member details to the user state variable.
+            }));
+            setFamilyMember({ //Update the family member details to the state variable "familyMember".
+                name:'',
+                relationship:'',
+                dob:'',
+            });
+            if (user.familyMembers.length === 0 && familyMember.relationship !== "Self") {
+                setMessage({
+                    "message":"Please add your name as family member with relationship 'Self'.",
+                    "status":"success"
+                });
+                return;
+            }         
         }
-    }
+
+        const handleRemoveFamilyMember = () => {
+            setUser((currentVal) => ({
+                ...currentVal,
+                familyMembers: currentVal.familyMembers.filter((member) => !member.isChecked) //Filter the family members based on the checkbox checked state)
+            }));
+            setMessage({
+                "message":"Family member removed successfully!",
+                "status":"success"
+            });
+        }
+    
+
+    //It triggers, when the user click the submit button.
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        //Check if the user has added at least one family member.
+        if (user.familyMembers.length === 0 && !user.familyMembers.some(member => member.relationship === "Self")) {    
+            setMessage({
+                "message":"Please add at least one family member before submitting.",
+                "status":"error"
+            });
+           // return;
+      
+       // console.log('Submitting user data:', JSON.stringify(user));
+
+    }   
+        try {
+            const response = await fetch('http://localhost:8080/api/user/submit', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(user),
+			});
+            if(!response.ok) {
+                throw new Error('Failed to submit the form. Please try again later.');
+            }
+            const data = await response.json();
+            console.log('Form submitted successfully:', data);
+            setIsformVisible(false);   
+		} catch (error) {
+			console.error(error.message);
+        }
+
+    
+        
+              
+    };
 
     return (
         <div className="container">
@@ -105,25 +197,29 @@ const NewUser = () => {
                             
                         <label>Select your date of birth *</label>
                         <input type="date" id="dob" name="dob" value={user.dob} onChange={handleInputChange} required></input>
+
+                        <label>Enter your user name *</label>
+                        <input type="text" id="userName" name="userName" value={user.userName} onChange={handleInputChange} required></input>
+
+                        <label>Enter your password *</label>
+                        <input type="password" id="password" name="password" value={user.password} onChange={handleInputChange} pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$"
+                            title="Password must be at least 5 characters, include an uppercase letter, a number, and a special character." required></input>
                             
                         <label>Enter your email address</label>
                         <input type='email' id="email" name="email" value={user.email} onChange={handleInputChange}></input>
                             
                         <label>Enter your contact number *</label>
-                        <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="123-456-6789" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" value={user.phoneNumber} onChange={handleInputChange} required></input>
+                        <input type="tel" id="contactNo" name="contactNo" placeholder="123-456-6789" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" value={user.contactNo} onChange={handleInputChange} required></input>
                             
-                        <label>Select your last visited date to the hospital *</label>
-                        <input type="date" id="visitedDate" name="visitedDate" value={user.visitedDate} onChange={handleInputChange} required></input>
-                    
                         <fieldset className="location-container">
                             <legend className="address">Address *</legend>
                             <label>Street name</label>
-                            <input type="text" id="streetName" name="streetName" value={user.streetName} onChange={handleInputChange}></input>
+                            <input type="text" id="street" name="street" value={user.street} onChange={handleInputChange}></input>
                             
                             <div className="location">
 
                                 <label>Country</label>
-                                <select className= "dropdown" id="country" name="country" value={ user.country.name ? user.country.name:""}  onChange={handleCountryChange} >
+                                <select className= "dropdown" id="country" name="country" value={ user.country || ""}  onChange={handleCountryChange} >
                                     <option value=''>Select Country</option>
                                     {countries.map((country) => 
                                         (<option key={country.isoCode} value={country.name}>{country.name}</option>)
@@ -147,6 +243,13 @@ const NewUser = () => {
                             
                         </fieldset>
 
+                        <label>Select your insurance provider *</label>
+                        <select className="dropdown" id="insuranceProvider" name="insuranceProvider" value={user.insuranceProvider} onChange={handleInputChange} required>
+                            <option value=''>Select Insurance Provider</option>
+                            <option value='Aetna'>Aetna</option>
+                            <option value='Blue Cross Blue Shield'>Blue Cross Blue Shield</option>
+                        </select>
+
                         <label>Enter your insurance number *</label>
                         <input type="text" id="insuranceNumber" name="insuranceNumber" value={user.insuranceNumber} onChange={handleInputChange} required></input>
                 
@@ -154,7 +257,7 @@ const NewUser = () => {
                             <legend>Please select insurance type *</legend>
 
                             <div className="radio-container">
-                                <input type="radio" id="ppo" name="insuranceType" value="PPO" checked={user.insuranceType === "PPO"} onChange={handleInputChange} required></input>
+                                <input type="radio" id="ppm" name="insuranceType" value="PPM" checked={user.insuranceType === "PPM"} onChange={handleInputChange} required></input>
                                 <label>PPO</label>
                                 
                                 <input type="radio" id="hmo" name="insuranceType" value="HMO" checked={user.insuranceType === "HMO"} onChange={handleInputChange} required></input>
@@ -163,6 +266,49 @@ const NewUser = () => {
 
                         </fieldset>
 
+                        <p><em>Note: Please include yourself by adding your own name as a family member with relationship "Self".</em></p>
+
+                        <label>Name</label>
+                        <input type="text" id="name" name="name" value={familyMember.name} onChange={handleMemberChange} ></input>
+                        <label>Relationship</label>
+                        <select className="dropdown" id="relationship" name="relationship" value={familyMember.relationship} onChange={handleMemberChange} >
+                            <option value=''>Select Relationship</option>
+                            <option value='Self'>Self</option>
+                            <option value='Spouse'>Spouse</option>
+                            <option value='Child'>Child</option>
+                            <option value='Parent'>Parent</option>
+                            <option value='Sibling'>Sibling</option>
+                            <option value='Other'>Other</option>
+                        </select>
+                        <label>DOB</label>
+                        <input type="date" id="dob" name="dob" value={familyMember.dob} onChange={handleMemberChange} ></input>
+
+                        <div>
+                            <ReusableButton id="add-family-member" type="button" name="add-family-member" onClick={handleAddFamilyMember}>Add Family Member</ReusableButton>
+                            
+                            <h4>Family Members:</h4>
+                            <ul>
+                                {user.familyMembers.map((member, index) => (
+                                    <li key={index}>
+                                        <input type="checkbox" checked={member.isChecked} onChange= { () => { 
+                                            const updatedMembers =  user.familyMembers.map((m, i) => i === index ? {...m, isChecked: !m.isChecked} : m);
+                                            setUser((currentVal) => ({
+                                                ...currentVal,
+                                                familyMembers: updatedMembers
+                                            }));  
+                                            }}/>
+
+                                        {member.name} - {member.relationship} - {member.dob}
+                                    </li>
+                            ))}
+                            </ul>
+
+                            <ReusableButton id="remove-family-member" type="button" name="remove-family-member" onClick={handleRemoveFamilyMember}>Remove Family Member</ReusableButton>    
+
+                        </div>
+                        <div className="error-message">
+                            {message && <p className="error">{message.message}</p>}
+                        </div>
                         <div className="button-submit">
                             <ReusableButton type="submit" id="submit" name="submit" >Submit</ReusableButton>
                         </div>
@@ -173,13 +319,7 @@ const NewUser = () => {
                 :
 
                 (<div className='message'>
-                    <p>You have successfully submitted the form. Please click the below button to view your prescription cost at pharmacies near your location.</p>
-
-                    <ReusableButton id="pharma-finder" type ="button" name="pharma-finder" onClick= { () => 
-                                                        navigate('/pharma-finder', {state:{user}} )//Navigate to pharma finder page and passing the user data, when the user clicks the button.
-                                                    }
-                    >Pharmacy Finder</ReusableButton>
-                    
+                    <p>Your user account is created successfully. Please click the login button to login.</p>     
                 </div>)   
 
             }

@@ -6,39 +6,48 @@ import ReusableButton from './ReusableButton';
 import './css/login.css';
 
 //Display the username and password when the user clicks the Login menu. {existingUserData} is passed as a props from App.jsx.
-const LoginInfo = ({existingUserData}) => {
+const LoginInfo = () => {
     
     //create state variable to store the logged user credentials.
-    const [login, setLogin] = useState({
-        userName:"",
-        password:""
-    });
+    const [userName, setUserName] = useState("");
+    const [password, setPassword] = useState("");
+    const [message, setMessage] = useState(""); 
 
-    //create navigate variable for navigating to existing user details page and passed the logged user's data.
-    const navigate = useNavigate();
-
-    //update the user entered username and password 
-    const handleChange = (e) => {
-        const{name, value} =  e.target;
-
-        setLogin(currentVal => ({
-            ...currentVal,
-            [name]:value
-        }));
-
+    const handleUserNameChange = (e) => {
+        setUserName(e.target.value);
     };
+
+    const handlePasswordChange = (e) => {
+        setPassword(e.target.value);
+    };
+
     
     //when the user clicks the login button, it username and password is stored in the local storage.
-    const handleLoginButton = (e) => {
+    const handleLoginButton = async (e) => {
         e.preventDefault();
-        const foundUser = existingUserData.find((user) => user.userName === login.userName); //Assign the logged user details to foundUser.
-
-        if(foundUser) {
-            localStorage.setItem("userName", login.userName);
-            localStorage.setItem("password", login.password); 
-            navigate('/existing-user', {state:{foundUser}}); //pass the logged user details to /existing-user page
-        }
         
+        //Check if the user has entered username and password.
+        if (userName === "" || password === "") {
+            setMessage("Please enter both username and password.");
+            return;
+        }   
+
+        try {
+            const response = await fetch('http://localhost:8080/api/user/login', {
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({userName, password}),
+            });
+           
+            if (!response.ok) {
+              
+                setMessage("Invalid username or password. Please try again.");
+            }
+            const data = await response.text();
+            setMessage(data);           
+        } catch (error) {
+            console.error("Error during login:", error);
+        }                       
     };
 
     return (
@@ -49,15 +58,19 @@ const LoginInfo = ({existingUserData}) => {
                 <form className = "login-form" onSubmit= {handleLoginButton}>
 
                     <div>
-                        <label>Username</label>
-                        <input type="text" id="name" name="userName" value={login.userName} onChange={handleChange}></input>
+                        <label>Username *</label>
+                        <input type="text" id="name" name="userName" value={userName} onChange={handleUserNameChange} required></input>
                     </div>
 
                     <div>
-                        <label>Password</label>
-                        <input type="password" id="password" name="password" value={login.password} onChange={handleChange}></input>
+                        <label>Password *</label>
+                        <input type="password" id="password" name="password" value={password} onChange={handlePasswordChange} required></input>
                     </div>
-                    
+                    {message && (
+                        <div className="error-message">
+                            <p>{message}</p>
+                        </div>
+                    )}
                     <ReusableButton id="login-button" type="submit" name="login">Login</ReusableButton>
 
                 </form>
