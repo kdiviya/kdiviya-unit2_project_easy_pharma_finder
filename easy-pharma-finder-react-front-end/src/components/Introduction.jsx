@@ -7,7 +7,7 @@ const Introduction = () => {
     return (
         
         <div className="container">
-           <Header />
+        
 
             <div className="content">
                 <h2 className="h2-animation">Welcome To Easy Pharma Finder !!!</h2>

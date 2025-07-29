@@ -205,7 +205,7 @@ const NewUser = () => {
 
     return (
         <div className="container">
-            <Header />
+           
 
            { isFormVisible ? 
 

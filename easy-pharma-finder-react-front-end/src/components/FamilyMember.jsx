@@ -6,13 +6,13 @@ import ReusableButton from './ReusableButton';
 import './css/existing-user.css';
 
 //Display the profile details when the existing user logged-in.
-const ExistingUser = () => {
+const FamilyMember = () => {
     
     const [familyMembers, setFamilyMembers] = useState([]);
     //create a variable for useNavigate and useLocation
     const navigate = useNavigate();
     const location = useLocation();
-    const user  = location.state.userName; //Assign the logged user details which is passed from "LoginInfo.jsx" to "user".
+    const user  = location.state?.userName; //Assign the logged user details which is passed from "LoginInfo.jsx" to "user".
 
 
     useEffect(() => { 
@@ -42,11 +42,12 @@ const ExistingUser = () => {
 
     return(
         <div className="container">
-            <Header />
+           
             <div className="content">
                 
                 <div className="profile">
                     <h2 className="h2-animation">Medication</h2>
+                    <p>Below are the user/s associated with that account. Please click the below link to view their medication.</p>
                     <ul>
                         {[...familyMembers]
                         .sort((a,b) => (a.relationship === "self"? -1 : 1)) // Sort so that self is always first
@@ -66,4 +67,4 @@ const ExistingUser = () => {
     )
 }
 
-export default ExistingUser;
+export default FamilyMember;

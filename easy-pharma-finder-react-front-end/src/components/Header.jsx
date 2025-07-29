@@ -1,30 +1,13 @@
 import { Link } from 'react-router-dom';
-import {useEffect, useState} from 'react';
+import { useState} from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHouse, faUser,faMortarPestle, faLock, faRightFromBracket, faBars} from '@fortawesome/free-solid-svg-icons';
+import { faHouse, faUser,faMortarPestle, faLock, faRightFromBracket, faBars, faUserGroup, faPills, faPrescriptionBottle} from '@fortawesome/free-solid-svg-icons';
 import logo from './images/logo.jpeg';
 
 //Displays the title and the nav link menus on the header. This component is reused in all the pages based on the user interaction.
-const Header = () => {
+const Header = ({userLogged}) => {
 
-    //create state variable to store the user's logged in name.
-    const [userLogged, setUserLogged] = useState("");
     const [showMobileMenu, setShowMobileMenu] = useState(false); // create state variable to display the bar icon menu for tablets and mobiles
-
-    //Every time page loads, get the username from the local storage if any.
-    useEffect( () => {
-        let user = localStorage.getItem("userName");
-        setUserLogged(user);
-        },
-    []);
-
-    //Once user clicks the logout menu, the credentials is deleted from the local storage and the same is updated on "userLogged".
-    const handleLogout = () => {
-        localStorage.removeItem("userName");
-        localStorage.removeItem("password");
-        setUserLogged(""); 
-
-    }
 
     //set the value true or false to display the menu when the user click the toogle in mobile/tabs
     const toggleMobileMenu = () => {  
@@ -45,10 +28,12 @@ const Header = () => {
                 <li><Link to="/about"><FontAwesomeIcon icon={faMortarPestle} />About us</Link></li>
 
                 { //If user is logged, then username and logout should be displayed in the nav link
-                    userLogged != "" && userLogged !== null &&
+                    userLogged != "" && userLogged !== null && userLogged !== undefined &&
                     <>
-                        <li><span><FontAwesomeIcon icon={faUser} /></span>{userLogged}</li>
-                        <li><Link to= "/logout" onClick={handleLogout}><FontAwesomeIcon icon={faRightFromBracket} />Logout</Link></li>   
+                        <li><Link to="/"><span><FontAwesomeIcon icon={faUser} /></span>{userLogged}</Link></li>
+                        <li><Link to= "/family-members"><FontAwesomeIcon icon={faPrescriptionBottle} />Medication</Link></li>
+                        <li><Link to= "/logout" ><FontAwesomeIcon icon={faRightFromBracket} />Logout</Link></li>   
+                        
                     </>
                 }
 
@@ -72,8 +57,9 @@ const Header = () => {
                         {
                             userLogged != "" && userLogged !== null &&
                             <>
-                                <li><span><FontAwesomeIcon icon={faUser} /></span>{userLogged}</li>
-                                <li><Link to= "/logout" onClick={handleLogout}><FontAwesomeIcon icon={faRightFromBracket} />Logout</Link></li>
+                                <li><Link to="/"><span><FontAwesomeIcon icon={faUser} /></span>{userLogged}</Link></li>
+                                <li><Link to= "/family-members"><FontAwesomeIcon icon={faPrescriptionBottle} />Medication</Link></li>
+                                <li><Link to= "/logout" ><FontAwesomeIcon icon={faRightFromBracket} />Logout</Link></li>   
                             </>
                         }
 

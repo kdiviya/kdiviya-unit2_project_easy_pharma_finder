@@ -6,7 +6,7 @@ import ReusableButton from './ReusableButton';
 import './css/login.css';
 
 //Display the username and password when the user clicks the Login menu. {existingUserData} is passed as a props from App.jsx.
-const LoginInfo = () => {
+const LoginInfo = ({setUserLogged}) => {
     
     const navigate = useNavigate();
 
@@ -14,6 +14,7 @@ const LoginInfo = () => {
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState(""); 
+
 
     const handleUserNameChange = (e) => {
         setUserName(e.target.value);
@@ -38,22 +39,34 @@ const LoginInfo = () => {
                 const response = await fetch('http://localhost:8080/api/user/login', {
                     method:'POST',
                     headers:{'Content-Type':'application/json'},
+                    credentials: 'include', // Include credentials to access the session
                     body:JSON.stringify({userName, password}),
                 });
               
                 //Check if the response is ok, if not, set the message to display error.
                 if (!response.ok) {  
-                    setMessage("Invalid username or password. Please try again.");
-                }
-                const data = await response.text();
+                    setMessage({"messaage":"Invalid username or password. Please try again.",
+                        "status":"error"});
+                    return;
+                }  
+
+                const data = await response.json();
+                
+                console.log("Login response:", data);
+                localStorage.setItem("ID", data.sessionID); 
+                localStorage.setItem("userName", userName);
+                setUserLogged(userName); 
+
+                 //Navigate to the ExistingUser component.
+                //navigate("/family-member", {state: {userName}}); 
+               
             } 
             
             catch (error) {
                 console.error("Error during login:", error);
             }  
 
-            //Navigate to the ExistingUser component.
-            navigate("/existing-user", {state: {userName}});
+                  
             return;
         }  
         
@@ -67,7 +80,7 @@ const LoginInfo = () => {
 
     return (
         <div className="container">
-            <Header />
+         
 
             <div className="content">
                 <form className = "login-form">

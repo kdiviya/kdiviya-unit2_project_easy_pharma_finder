@@ -7,7 +7,7 @@ const About = () => {
     return(
         <div className="container">
 
-            <Header />
+           
             <div className="content">
                 <h2 className='h2-animation'>Know More, Pay Less – About My Journey</h2>
 

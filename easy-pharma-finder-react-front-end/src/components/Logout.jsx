@@ -7,7 +7,7 @@ const Logout = () => {
     return (
 
         <div className='container'>
-            <Header />
+      
 
             <div className='content'>
                 <p className='logout-p'> You have successfully logged out.</p>
