@@ -19,10 +19,14 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/user/login", "/api/user/get-session", "/api/user/submit",
+                        .requestMatchers("/api/user/login", "/api/user/getSession", "/api/user/submit",
                                 "/api/user/existingUser/**").permitAll()
                         .anyRequest().authenticated()
-                );
+                )
+                  .sessionManagement(session -> session.maximumSessions(1)
+                  )
+                  .securityContext(securityContext -> securityContext.requireExplicitSave(false)
+                  );
 
         return httpSecurity.build();
     }

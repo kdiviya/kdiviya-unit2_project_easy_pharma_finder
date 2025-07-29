@@ -8,12 +8,16 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true", maxAge = 3600)
 @RestController
 @RequestMapping("/api/user")
 public class LoginController {
@@ -28,7 +32,7 @@ public class LoginController {
     @PostMapping("/login")
 
     //method to implement User Authentication based on credentials entered by the user.
-    public ResponseEntity<String> loginAuthentication(@RequestBody User user, HttpServletRequest request) {
+    public ResponseEntity<?> loginAuthentication(@RequestBody User user, HttpServletRequest request) {
         Optional<User> existingUser = userRepository.findByUserName(user.getUserName());
 
             //Verify the existing username and the corresponding password
@@ -37,28 +41,17 @@ public class LoginController {
                 if (passwordEncoder.matches(user.getPassword(), userExist.getPassword())) {
                     HttpSession session = request.getSession(true);
                     session.setAttribute("user", userExist.getUserName());
-                    return ResponseEntity.ok("Login Successfully");
-                }
-                else {
-                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username & password");
-                }
-            }
-            //If the user not exists, display the message "Not Authorized user".
-            else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized user");
-            }
-    }
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(userExist.getUserName(), null, Collections.emptyList());
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
 
-    @GetMapping("/getSession")
-    public ResponseEntity<?> getSession(HttpServletRequest httpServletRequest) {
-        HttpSession session = httpServletRequest.getSession(true);
-        if (session != null) {
-            String username = (String) session.getAttribute("user");
-            if (username != null) {
-                return ResponseEntity.ok("Logged in " +username);
+                    return ResponseEntity.ok(Map.of("message", "Login successful",
+                            "Session Id", session.getId(),
+                            "userName", userExist.getUserName()));
+                }
             }
-        }
-       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Session timedout");
-    }
 
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username & password");
+
+    }
 }
