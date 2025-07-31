@@ -71,28 +71,6 @@ public class UserController {
         }
     }
 
-    //corresponds to url (http://localhost:8080/api/user/existingUser/{userId}/addFamilyMember")
-    @PostMapping("/existingUser/{userId}/addFamilyMember")
-    //Add new family member for the existing user
-    public ResponseEntity<?> addFamilyMember(@PathVariable int userId, @RequestBody List<FamilyMember> familyMembers) {
-        Optional<User> userExist = userRepository.findById(userId);
-
-        //verify the userid exist on the user repository. if so, add all the new family members to the family_member table
-        if(userExist.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        }
-
-        //If the user add more than one family members, iterate the loop and assign all of them in setUser().
-        User userDetails = userExist.get();
-        for (FamilyMember fm : familyMembers) {
-            fm.setUser(userDetails);
-        }
-
-        //Store all the family members in the family member repository.
-        List<FamilyMember> savedFamilyMember = familyMemberRepository.saveAll(familyMembers);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedFamilyMember);
-    }
-
 
     //corresponds to url (http://localhost:8080/api/user/updateUser
     @PutMapping("/updateUser")
