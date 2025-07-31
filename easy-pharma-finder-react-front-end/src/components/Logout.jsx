@@ -1,8 +1,18 @@
-import Header from './Header';
 import Footer  from './Footer';
+import React, { useEffect } from 'react';
 
-//Display the logout message wnhen the user clicks logout.
-const Logout = () => {
+//Display the logout message when the user clicks logout.
+const Logout = ({setUserLogged}) => {
+    
+
+    //Clear the userLogged state and localStorage when the user logs out.
+   useEffect(() => {
+        setUserLogged(null);
+        localStorage.removeItem("ID");
+        localStorage.removeItem("userName");
+        setUserLogged(null);
+       
+    }, [setUserLogged]);
 
     return (
 

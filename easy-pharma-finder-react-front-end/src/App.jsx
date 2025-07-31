@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import pharmacyData from './sample-data/pharmacyData.json';
 import About from './components/About';
 import Introduction from './components/Introduction';
 import NewUser from './components/NewUser';
 import PharmacyFinder from './components/PharmacyFinder';
 import LoginInfo from './components/LoginInfo';
 import Header from './components/Header';
+import ExistingUser from './components/ExistingUser';
 import { useState } from 'react';
 import Logout from './components/Logout';
 import './App.css';
@@ -13,7 +13,10 @@ import FamilyMember from './components/FamilyMember';
 
 function App() {
 
-  const [userLogged, setUserLogged] = useState("");
+  const [userLogged, setUserLogged] = useState(() => {
+    return localStorage.getItem("userName") || null;
+  }
+    );
 
   return (
     <Router>
@@ -31,16 +34,19 @@ function App() {
         <Route path = "/new-user" element={<NewUser />}
         />
 
-        <Route path = "/pharma-finder" element={<PharmacyFinder  pharmacyData={pharmacyData}/>}
+        <Route path = "/pharma-finder" element={<PharmacyFinder />}
         />
 
         <Route path = "/login" element={<LoginInfo setUserLogged = {setUserLogged} />}
         />
 
-        <Route path = "/family-members" element={<FamilyMember />}
+        <Route path = "/existing-user" element={<ExistingUser userLogged = {userLogged} />}
+        />
+
+        <Route path = "/family-members/:userName" element={<FamilyMember />}
         /> 
 
-        <Route path = "/logout" element={<Logout />}
+        <Route path = "/logout" element={<Logout setUserLogged = {setUserLogged}/>}
         />   
 
       </Routes>

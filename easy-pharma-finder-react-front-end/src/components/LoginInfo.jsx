@@ -1,4 +1,4 @@
-import Header from './Header';
+import React from 'react';
 import Footer  from './Footer';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -42,32 +42,28 @@ const LoginInfo = ({setUserLogged}) => {
                     credentials: 'include', // Include credentials to access the session
                     body:JSON.stringify({userName, password}),
                 });
-              
+               
                 //Check if the response is ok, if not, set the message to display error.
                 if (!response.ok) {  
-                    setMessage({"messaage":"Invalid username or password. Please try again.",
+                    setMessage({"message":"Invalid username or password. Please try again.",
                         "status":"error"});
                     return;
                 }  
 
                 const data = await response.json();
                 
-                console.log("Login response:", data);
                 localStorage.setItem("ID", data.sessionID); 
                 localStorage.setItem("userName", userName);
                 setUserLogged(userName); 
 
                  //Navigate to the ExistingUser component.
-                //navigate("/family-member", {state: {userName}}); 
+                navigate(`/family-members/${userName}`); 
                
             } 
             
             catch (error) {
                 console.error("Error during login:", error);
-            }  
-
-                  
-            return;
+            }               
         }  
         
         else {
@@ -81,7 +77,6 @@ const LoginInfo = ({setUserLogged}) => {
     return (
         <div className="container">
          
-
             <div className="content">
                 <form className = "login-form">
 
@@ -96,7 +91,7 @@ const LoginInfo = ({setUserLogged}) => {
                     </div>
                     {message && (
                         <div className={`${message.status}`}>
-                            {message.message}
+                           <p> {message.message}</p>
                         </div>
                     )}
                                    
