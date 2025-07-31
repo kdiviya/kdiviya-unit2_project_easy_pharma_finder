@@ -31,7 +31,8 @@ const ExistingUser = ({userLogged}) => {
                     throw new Error('Failed to fetch user profile');
                 }
                 const data = await response.json();
-                console.log('User Profile:', data);
+                data.password=null;
+
                 setUserProfile(data);
             
             } catch (error) {
@@ -80,11 +81,13 @@ const ExistingUser = ({userLogged}) => {
     const handleEdit = () => {
         setIsEdit(true);
         setEditProfile(userProfile);
+
         const country = countries.find(country => country.name === userProfile.country);
         if (country) {
             setSelectedCountry(country);
             setStates(State.getStatesOfCountry(country.isoCode));
-        }  
+        } 
+        
     }
 
     const handleCheckboxChange = (e, index) => {
@@ -113,6 +116,9 @@ const ExistingUser = ({userLogged}) => {
         const updatedFamilyMembers = editProfile.familyMembers.filter(member => !member.isChecked);
         const removedFamilyMembers = editProfile.familyMembers.filter(member => member.isChecked);
         const removedID = removedFamilyMembers.map(member => member.id);
+
+        console.log("checked", removedFamilyMembers);
+        console.log("not checked" ,updatedFamilyMembers);
      
         if (removedFamilyMembers.length > 0) {
             const response = await fetch(`http://localhost:8080/api/user/deleteFamilyMember`, {
@@ -124,23 +130,21 @@ const ExistingUser = ({userLogged}) => {
             if (!response.ok) {
                 throw new Error('Failed to remove family members');
             }
-            const data = await response.json();
-            console.log('Family members removed successfully:', data);
-        } else {
+            const data = await response.text();
+            setEditProfile((currentVal) => ({
+                 ...currentVal,
+                familyMembers: updatedFamilyMembers  
+            }))
+        } 
+        else {
             setMessage("Please select at least one family member to remove.");
             return;
-        }    
-
-        setEditProfile((currentVal) => {
-            return {
-                ...currentVal,
-                familyMembers: updatedFamilyMembers
-            }
-        })
+        }          
     }
 
 
     const handleSaveButton = async () => {
+        
         try {
             const response = await fetch(`http://localhost:8080/api/user/updateUser`, {
                 method: 'PUT',
@@ -152,7 +156,6 @@ const ExistingUser = ({userLogged}) => {
                 throw new Error('Failed to update user profile');
             }
             const data = await response.json();
-            console.log('Profile updated successfully:', data);
             setUserProfile(data);           
             setIsEdit(false);
             setEditProfile(data); // Update the editProfile state with the updated data
@@ -249,7 +252,7 @@ const ExistingUser = ({userLogged}) => {
                         <legend className="address">Address *</legend>
                         <label>Street name</label>
                             {isEdit ?
-                                (<input type="text" name="streetName" value={editProfile.street} onChange={handleChange} />)
+                                (<input type="text" name="street" value={editProfile.street} onChange={handleChange} />)
                                 : 
                                 <span>{userProfile.street}</span>
                             }

@@ -23,19 +23,19 @@ const PharmacyFinder = () => {
                     credentials: 'include' // Include credentials to access the session
                 });
                 if (!response.ok) {
-                    setMessage("No Medication details are associated with that family member");
+                    setMessage("No Medication details are associated with that family member.");
                 }
                 const data = await response.json();
                 setCostBreakdownData(data);              
                 
             } catch (error) {
-                console.error("Pharmacy data not found");
+                console.error("Pharmacy data not found.");
             }
         };  
         if (userName && memberId) {
             fetchPharmacyData();
         } else {
-            console.error("userName or memberId is not defined");
+            console.error("userName or memberId is not defined.");
         }
     }, [userName, memberId]); // Add userName and memberId as dependencies    
 
