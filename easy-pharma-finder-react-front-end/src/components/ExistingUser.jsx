@@ -3,13 +3,15 @@ import Footer from './Footer';
 import { Country, State } from 'country-state-city';
 import ReusableButton from './ReusableButton';
 import './css/existing-user.css';
-import { is } from 'date-fns/locale';
+
 
 //Display the profile details when the existing user logged-in.
 const ExistingUser = ({userLogged}) => {
     const [userProfile, setUserProfile] = useState(null);
     const [isEdit, setIsEdit] = useState(false);
     const [editProfile, setEditProfile] = useState(false);
+    const [message, setMessage] = useState("");
+  
 
     //create state variable for country, state and get the values from the package "country-state-city"
     const[countries, setCountries] = useState(Country.getAllCountries());
@@ -31,6 +33,7 @@ const ExistingUser = ({userLogged}) => {
                 const data = await response.json();
                 console.log('User Profile:', data);
                 setUserProfile(data);
+            
             } catch (error) {
                 console.error('Error fetching user profile:', error);
             }
@@ -62,14 +65,26 @@ const ExistingUser = ({userLogged}) => {
         
     }
 
+    const handleFamilyMemberChange = (e, index, name) => {
+        const { value } = e.target;
+        setEditProfile((currentVal) => {
+            const updatedFamilyMembers = [...currentVal.familyMembers];
+            updatedFamilyMembers[index][name] = value; // Update the specific field of the family member
+            return {
+                ...currentVal,
+                familyMembers: updatedFamilyMembers
+            };
+        });
+    };
+
     const handleEdit = () => {
         setIsEdit(true);
         setEditProfile(userProfile);
-       const country = countries.find(country => country.name === userProfile.country);
+        const country = countries.find(country => country.name === userProfile.country);
         if (country) {
             setSelectedCountry(country);
             setStates(State.getStatesOfCountry(country.isoCode));
-        }   
+        }  
     }
 
     const handleCheckboxChange = (e, index) => {
@@ -84,6 +99,41 @@ const ExistingUser = ({userLogged}) => {
         });
     };
 
+    const handleAddFamilyMember = () => {
+        setEditProfile((currentVal) => ({
+            ...currentVal,
+            familyMembers: [
+                ...currentVal.familyMembers,
+                { name: '', dob: '', relationship: '', isChecked: false }   // Add a new family member with default values          
+            ],
+        }));  
+    };
+
+
+    const handleSaveButton = async () => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/user/updateUser`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include', // Include credentials to access the session
+                body: JSON.stringify(editProfile),
+            });
+            if (!response.ok) {
+                throw new Error('Failed to update user profile');
+            }
+            const data = await response.json();
+            console.log('Profile updated successfully:', data);
+            setUserProfile(data);           
+            setIsEdit(false);
+            setEditProfile(data); // Update the editProfile state with the updated data
+            setMessage("Profile updated successfully.");
+        } 
+        
+        catch (error) {
+            console.error('Error updating user profile:', error);
+        }
+    };
+
     if (!userProfile) {
         return <div>Loading...</div>;
     }   
@@ -92,7 +142,10 @@ const ExistingUser = ({userLogged}) => {
         <div className="container">
     
             <div className="content">
-                
+                <div className="message">
+                    {message && <p className="mesage-update">{message}</p>}
+                </div>  
+
                 <div className="profile">
                     <h2 className="h2-animation">Profile Details</h2>
                     <div>
@@ -131,11 +184,7 @@ const ExistingUser = ({userLogged}) => {
 
                     <div>
                         <label>Username: </label>
-                        {isEdit ?
-                            (<input type="text" name="username" value={editProfile.userName} onChange={handleChange} />)
-                            : 
-                            <span>{userProfile.userName}</span>
-                        }   
+                        <span>{userProfile.userName}</span>     
                     </div>
 
                     <div>
@@ -271,20 +320,22 @@ const ExistingUser = ({userLogged}) => {
                                     <li key={index}>
                                         <input type="checkbox" checked={member.isChecked} onChange={(e) => handleCheckboxChange(e, index)} />
                                         <label>Name</label>
-                                        <input type="text" name={`familyMemberName_${index}`} value={member.name} onChange={handleChange} />
+                                        <input type="text" value={member.name} onChange={(e) => handleFamilyMemberChange(e, index, 'name')} />
                                         <label>DOB</label>
-                                        <input type="date" name={`familyMemberDob_${index}`} value={member.dob} onChange={handleChange} />
+                                        <input type="date" value={member.dob} onChange={(e) => handleFamilyMemberChange(e, index, 'dob')} />
                                         <label>Relationship</label>
-                                        <select name={`familyMemberRelationship_${index}`} value={member.relationship} onChange={handleChange}>
-                                            <option value="">Select Relationship</option>
-                                            <option value="Spouse">Spouse</option>
-                                            <option value="Child">Child</option>
-                                            <option value="Parent">Parent</option>
-                                            <option value="Sibling">Sibling</option>
-                                            <option value="Other">Other</option>
+                                        <select value={member.relationship} onChange={(e) => handleFamilyMemberChange(e, index, 'relationship')}>
+                                            <option value=''>Select Relationship</option>
+                                            <option value='Self'>Self</option>
+                                            <option value='Spouse'>Spouse</option>
+                                            <option value='Child'>Child</option>
+                                            <option value='Parent'>Parent</option>
+                                            <option value='Sibling'>Sibling</option>
+                                            <option value='Other'>Other</option>
                                         </select>
                                     </li>
                                 ))}
+                               
                             </ul>)
                         :
                         (<ul>
@@ -297,12 +348,14 @@ const ExistingUser = ({userLogged}) => {
                     <ReusableButton id="edit" name = "edit" onClick={handleEdit}>Edit</ReusableButton>
                     {isEdit && (
                         <>
-                            <ReusableButton type = "button" id="remove_family_member" name = "remove_family_member">Remove Family Member</ReusableButton>
-                            <ReusableButton id="add_family_member" name = "add_family_member">Add Family Member</ReusableButton> 
+                            <ReusableButton type = "button" id="remove_family_member" name = "remove_family_member" onClick={handleRemoveFamilyMember}>Remove Family Member</ReusableButton>
+                            <ReusableButton id="add_family_member" name = "add_family_member" onClick={handleAddFamilyMember}>Add Family Member</ReusableButton>
+                            <ReusableButton id="save" name = "save" onClick={handleSaveButton}>Save</ReusableButton> 
+                            <ReusableButton id="cancel" name = "cancel" onClick={() => setIsEdit(false)}>Cancel</ReusableButton>
                         </>
                     )}
                     
-                    <ReusableButton id="save" name = "save">Save</ReusableButton>
+                    
                 </div>
 
             </div>
