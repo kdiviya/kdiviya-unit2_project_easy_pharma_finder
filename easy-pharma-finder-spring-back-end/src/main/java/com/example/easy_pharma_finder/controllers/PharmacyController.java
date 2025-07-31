@@ -42,20 +42,29 @@ public class PharmacyController {
         if (pharmacies.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No pharmacies found for this zip code");
         }
-        List<Medication> memberMedList = medicationRepository.findByFamilyMemberId(familyMemberId);
-        if (memberMedList.isEmpty()) {
+
+       Optional<FamilyMember> familyMember = familyMemberRepository.findById(familyMemberId);
+        if (familyMember.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No medications found for the selected family member");
         }
 
-        for (Medication med : memberMedList) {
+        List<Medication> medications = familyMember.get().getMedications();
+
+        if (medications.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No medications found");
+        }
+
+        for (Medication med : medications) {
             for (Pharmacy pharmacy : pharmacies) {
                 Optional<PharmacyMedicationCost> medPercent = pharmacyMedicationCostRepository.findByPharmacyIdAndMedicationId(pharmacy.getId(), med.getId());
+
                 if (medPercent.isPresent()) {
-                    System.out.println("med:" + medPercent);
                     insurancePaidPercent = medPercent.get().getInsurancePaidPercent();
                     double actualCost = med.getActualCost() * (1 - insurancePaidPercent / 100.0);
                     Map<String, Object> map = new HashMap<>();
                     map.put("pharmacyName", pharmacy.getPharmacyName());
+                    map.put("pharmacyUrl", pharmacy.getUrl());
+                    map.put("homeDelivery", pharmacy.getIsHomeDelivery());
                     map.put("medicationName", med.getMedicationName());
                     map.put("medicationCost", med.getActualCost());
                     map.put("insurancePaidPercent", insurancePaidPercent);

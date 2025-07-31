@@ -12,17 +12,14 @@ public class Medication {
     private double actualCost;
 
 
-    @Column(name="fk_family_member_id")
-    private Integer familyMemberId;
-
     public Medication() {
     }
 
-    public Medication(int id, String medicationName, double actualCost, Integer familyMemberId) {
+    public Medication(int id, String medicationName, double actualCost) {
         this.id = id;
         this.medicationName = medicationName;
         this.actualCost = actualCost;
-        this.familyMemberId = familyMemberId;
+
     }
 
     public int getId() {
@@ -49,13 +46,7 @@ public class Medication {
         this.actualCost = actualCost;
     }
 
-    public Integer getFamilyMemberId() {
-        return familyMemberId;
-    }
 
-    public void setFamilyMemberId(Integer familyMemberId) {
-        this.familyMemberId = familyMemberId;
-    }
 
     @Override
     public String toString() {
@@ -63,7 +54,6 @@ public class Medication {
                 "id=" + id +
                 ", medicationName='" + medicationName + '\'' +
                 ", actualCost=" + actualCost +
-                ", familyMemberId=" + familyMemberId +
                 '}';
     }
 }

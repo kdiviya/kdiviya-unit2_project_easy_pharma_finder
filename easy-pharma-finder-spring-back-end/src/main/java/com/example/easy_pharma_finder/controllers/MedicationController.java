@@ -25,31 +25,28 @@ public class MedicationController {
     @Autowired
     private FamilyMemberRepository familyMemberRepository;
 
+    //Get the medication/s for the particular family member
     @GetMapping("/existingUser/medication")
     public ResponseEntity<?> getMedicationDetails(@RequestParam Integer familyMemberId) {
 
-        List<Medication>  medList = medicationRepository.findByFamilyMemberId(familyMemberId);
+        Optional<FamilyMember> familyMember = familyMemberRepository.findById(familyMemberId);
 
-        if(!medList.isEmpty()) {
-            return ResponseEntity.ok(medList);
-        }
-        else {
-            medList = medicationRepository.findTop2ByFamilyMemberIdIsNull();
-
-           if (!medList.isEmpty()) {
-                for(Medication med : medList) {
-                    med.setFamilyMemberId(familyMemberId);
-                }
-                medicationRepository.saveAll(medList);
-                return ResponseEntity.ok(medList);
+        if(familyMember.isPresent()) {
+            List<Medication> medications = familyMember.get().getMedications();
+            if(!medications.isEmpty()){
+                return ResponseEntity.ok(medications);
             }
             else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Medication found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No medications found");
             }
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Family member not found");
         }
 
     }
 
+    //Get the family members based on the existing username.
     @GetMapping("/existingUser/{userName}/family-members")
     public ResponseEntity<?> getFamilyMembers(@PathVariable String userName) {
         Optional<User> userExist = userRepository.findByUserName(userName);

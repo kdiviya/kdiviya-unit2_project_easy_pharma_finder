@@ -9,23 +9,27 @@ public class Pharmacy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String pharmacyName;
-    private String Address;
+    private String address;
     private String city;
-    private String State;
-    private String Country;
+    private String state;
+    private String country;
     private String zipCode;
+    private String url;
+    private Boolean isHomeDelivery;
 
     public Pharmacy() {
     }
 
-    public Pharmacy(int id, String pharmacyName, String address, String city, String state, String country, String zipCode) {
+    public Pharmacy(int id, String pharmacyName, String address, String city, String state, String country, String zipCode, String url, Boolean isHomeDelivery) {
         this.id = id;
         this.pharmacyName = pharmacyName;
-        Address = address;
+        this.address = address;
         this.city = city;
-        State = state;
-        Country = country;
+        this.state = state;
+        this.country = country;
         this.zipCode = zipCode;
+        this.url = url;
+        this.isHomeDelivery = isHomeDelivery;
     }
 
     public int getId() {
@@ -45,11 +49,11 @@ public class Pharmacy {
     }
 
     public String getAddress() {
-        return Address;
+        return address;
     }
 
     public void setAddress(String address) {
-        Address = address;
+        address = address;
     }
 
     public String getCity() {
@@ -61,19 +65,19 @@ public class Pharmacy {
     }
 
     public String getState() {
-        return State;
+        return state;
     }
 
     public void setState(String state) {
-        State = state;
+        state = state;
     }
 
     public String getCountry() {
-        return Country;
+        return country;
     }
 
     public void setCountry(String country) {
-        Country = country;
+        country = country;
     }
 
     public String getZipCode() {
@@ -84,16 +88,34 @@ public class Pharmacy {
         this.zipCode = zipCode;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Boolean getIsHomeDelivery() {
+        return isHomeDelivery;
+    }
+
+    public void setIsHomeDelivery(Boolean isHomeDelivery) {
+        this.isHomeDelivery = isHomeDelivery;
+    }
+
     @Override
     public String toString() {
         return "Pharmacy{" +
                 "id=" + id +
                 ", pharmacyName='" + pharmacyName + '\'' +
-                ", Address='" + Address + '\'' +
+                ", Address='" + address + '\'' +
                 ", city='" + city + '\'' +
-                ", State='" + State + '\'' +
-                ", Country='" + Country + '\'' +
+                ", State='" + state + '\'' +
+                ", Country='" + country + '\'' +
                 ", zipCode='" + zipCode + '\'' +
+                ", URL='" + url + '\'' +
+                ", HomeDelivery='" + isHomeDelivery + '\'' +
                 '}';
     }
 }

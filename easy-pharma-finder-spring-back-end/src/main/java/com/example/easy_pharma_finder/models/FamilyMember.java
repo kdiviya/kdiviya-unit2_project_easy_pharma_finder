@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class FamilyMember {
@@ -18,6 +20,14 @@ public class FamilyMember {
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
+
+    @ManyToMany
+    @JoinTable(
+            name = "family_member_medication",
+            joinColumns = @JoinColumn(name="family_member_id"),
+            inverseJoinColumns = @JoinColumn(name="medication_id")
+    )
+    private List<Medication> medications = new ArrayList<>();
 
     public FamilyMember() {}
 
@@ -67,6 +77,14 @@ public class FamilyMember {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<Medication> getMedications() {
+        return medications;
+    }
+
+    public void setMedications(List<Medication> medications) {
+        this.medications = medications;
     }
 
     @Override
