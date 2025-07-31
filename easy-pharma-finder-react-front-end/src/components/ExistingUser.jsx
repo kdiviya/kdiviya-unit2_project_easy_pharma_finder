@@ -9,7 +9,7 @@ import './css/existing-user.css';
 const ExistingUser = ({userLogged}) => {
     const [userProfile, setUserProfile] = useState(null);
     const [isEdit, setIsEdit] = useState(false);
-    const [editProfile, setEditProfile] = useState(false);
+    const [editProfile, setEditProfile] = useState(null);
     const [message, setMessage] = useState("");
   
 
@@ -80,7 +80,11 @@ const ExistingUser = ({userLogged}) => {
 
     const handleEdit = () => {
         setIsEdit(true);
-        setEditProfile(userProfile);
+        setMessage("")
+        setEditProfile({...userProfile,
+                        password:""
+        });
+       
 
         const country = countries.find(country => country.name === userProfile.country);
         if (country) {
@@ -142,7 +146,6 @@ const ExistingUser = ({userLogged}) => {
         }          
     }
 
-
     const handleSaveButton = async () => {
         
         try {
@@ -158,7 +161,10 @@ const ExistingUser = ({userLogged}) => {
             const data = await response.json();
             setUserProfile(data);           
             setIsEdit(false);
-            setEditProfile(data); // Update the editProfile state with the updated data
+            setEditProfile({...data,
+                            password:""
+            }); // Update the editProfile state with the updated data
+
             setMessage("Profile updated successfully.");
         } 
         
@@ -176,7 +182,7 @@ const ExistingUser = ({userLogged}) => {
     
             <div className="content">
                 <div className="message">
-                    {message && <p className="mesage-update">{message}</p>}
+                    {message && <p className="message-update">{message}</p>}
                 </div>  
 
                 <div className="profile">
@@ -378,15 +384,17 @@ const ExistingUser = ({userLogged}) => {
                 </div>
                 
                 <div>
-                    <ReusableButton id="edit" name = "edit" onClick={handleEdit}>Edit</ReusableButton>
-                    {isEdit && (
+                    
+                    {isEdit ? (
                         <>
                             <ReusableButton type = "button" id="remove_family_member" name = "remove_family_member" onClick={handleRemoveFamilyMember}>Remove Family Member</ReusableButton>
                             <ReusableButton id="add_family_member" name = "add_family_member" onClick={handleAddFamilyMember}>Add Family Member</ReusableButton>
                             <ReusableButton id="save" name = "save" onClick={handleSaveButton}>Save</ReusableButton> 
                             <ReusableButton id="cancel" name = "cancel" onClick={() => setIsEdit(false)}>Cancel</ReusableButton>
                         </>
-                    )}
+                    ) :
+                    <ReusableButton id="edit" name = "edit" onClick={handleEdit}>Edit</ReusableButton>
+                    }
                     
                     
                 </div>
