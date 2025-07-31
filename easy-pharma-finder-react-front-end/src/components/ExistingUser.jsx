@@ -247,48 +247,50 @@ const ExistingUser = ({userLogged}) => {
                         }
                     </div>
 
-                    <ul className="family-members">
+                   
                         <h3>Family Members</h3>
-                        {userProfile.familyMembers && userProfile.familyMembers.length > 0 ? (
-                            userProfile.familyMembers.map((member, index) => (
-                                <li key={index}>
-                                    <span>{member.name} - {member.dob} - {member.relationship}</span>   
-                                </li>
-                            ))
-                        ) : (
-                            <li>No family members added.</li>
-                        )}
+                        {!isEdit ? (
+                                userProfile.familyMembers && userProfile.familyMembers.length > 0 ? (
+                                <ul className="family-members">
+                                    {userProfile.familyMembers.map((member, index) => (
+                                        <li key={index}>
+                                        <span>{member.name} - {member.dob} - {member.relationship}</span>   
+                                        </li>
+                                    ))}
+                                </ul>)
+                            : 
+                            (<ul>
+                                (<li>No family members added.</li>)
+                            </ul>)   
+                        ) 
 
-                        {editProfile.familyMembers && editProfile.familyMembers.length > 0 ? (
-                            editProfile.familyMembers.map((member, index) => (
-                                <li key={index}>
-                                    {isEdit ? (
-                                        <div>
-                                            <input type="checkbox" checked={member.isChecked || false} onChange ={handleCheckboxChange(e, index)} />
-                                            <input type="text" name="name" value={member.name} onChange={(e) => handleFamilyMemberChange(e, index)} placeholder="Name" />
-                                            <input type="date" name="dob" value={member.dob} onChange={(e) => handleFamilyMemberChange(e, index)} placeholder="DOB" />
-                                            <select name="relationship" value={member.relationship} onChange={(e) => handleFamilyMemberChange(e, index)}>
-                                                <option value="">Select Relationship</option>
-                                                <option value="Self">Spouse</option>
-                                                <option value="Spouse">Spouse</option>
-                                                <option value="Child">Child</option>
-                                                <option value="Parent">Parent</option>
-                                                <option value="Sibling">Sibling</option>
-                                                <option value="Other">Other</option>
-                                            </select>
-                                        </div>
-                                    ) :
-                                        <span>{member.name} - {member.dob} - {member.relationship}</span>
-                                    }
-                                </li> 
-                            ))
-                        ) : (
-                            <li>No family members added.</li>
-                        )}  
-                    </ul>
-
-
-
+                        :
+                        (editProfile.familyMembers && editProfile.familyMembers.length > 0 ? (
+                            <ul className="family-members-edit">
+                                {editProfile.familyMembers.map((member, index) => (
+                                    <li key={index}>
+                                        <input type="checkbox" checked={member.isChecked} onChange={(e) => handleCheckboxChange(e, index)} />
+                                        <label>Name</label>
+                                        <input type="text" name={`familyMemberName_${index}`} value={member.name} onChange={handleChange} />
+                                        <label>DOB</label>
+                                        <input type="date" name={`familyMemberDob_${index}`} value={member.dob} onChange={handleChange} />
+                                        <label>Relationship</label>
+                                        <select name={`familyMemberRelationship_${index}`} value={member.relationship} onChange={handleChange}>
+                                            <option value="">Select Relationship</option>
+                                            <option value="Spouse">Spouse</option>
+                                            <option value="Child">Child</option>
+                                            <option value="Parent">Parent</option>
+                                            <option value="Sibling">Sibling</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </li>
+                                ))}
+                            </ul>)
+                        :
+                        (<ul>
+                            (<li>No family members added.</li>)
+                        </ul>))         
+                        }   
                 </div>
                 
                 <div>
