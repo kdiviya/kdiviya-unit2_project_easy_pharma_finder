@@ -12,6 +12,7 @@ const PharmacyFinder = () => {
     const location = useLocation();
     const {memberId, userName} = location.state || {}; // Destructure id and userName from location.state, defaulting to empty if not present
     const [costBreakdownData , setCostBreakdownData] = useState([]);
+    const [message, setMessage] = useState(false);
    
     useEffect(() => {
         const fetchPharmacyData = async () => {
@@ -22,12 +23,13 @@ const PharmacyFinder = () => {
                     credentials: 'include' // Include credentials to access the session
                 });
                 if (!response.ok) {
-                    throw new Error("Failed to fetch pharmacy data");
+                    setMessage("No Medication details are associated with that family member");
                 }
                 const data = await response.json();
-                setCostBreakdownData(data);
+                setCostBreakdownData(data);              
+                
             } catch (error) {
-                console.error("Error fetching pharmacy data:", error);
+                console.error("Pharmacy data not found");
             }
         };  
         if (userName && memberId) {
@@ -58,7 +60,7 @@ const PharmacyFinder = () => {
        
         return pMedList;    
     }
-    
+   
     const pharmacyList = pharmacyMedList(costBreakdownData);
 
     //Redirects the user to that particular pharmacy order page once the user clicks the "click to order" button.
@@ -78,7 +80,9 @@ const PharmacyFinder = () => {
 
             <div className="p-content"> 
                 <h2 className='h2-animation'>Pharmacy Prescription Details</h2>
-
+                <div>
+                    {message && <p>{message}</p>}
+                </div>
                 { Object.keys(pharmacyList).map((pName)=> (
                     <div key={pName}>
                         <h3>{pName}</h3>
@@ -110,7 +114,7 @@ const PharmacyFinder = () => {
         
                                     <tr className="total-cost" >
                                         <td colSpan={4}>Total Cost</td>
-                                        <td>${totalCost(pName)}</td> 
+                                        <td>${totalCost(pName).toFixed(2)}</td> 
                                     </tr>
 
                                 </tbody>

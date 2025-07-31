@@ -109,6 +109,36 @@ const ExistingUser = ({userLogged}) => {
         }));  
     };
 
+    const handleRemoveFamilyMember = async () => {
+        const updatedFamilyMembers = editProfile.familyMembers.filter(member => !member.isChecked);
+        const removedFamilyMembers = editProfile.familyMembers.filter(member => member.isChecked);
+        const removedID = removedFamilyMembers.map(member => member.id);
+     
+        if (removedFamilyMembers.length > 0) {
+            const response = await fetch(`http://localhost:8080/api/user/deleteFamilyMember`, {
+                method:'DELETE',
+                headers:{'Content-Type':'application/json'},
+                credentials: 'include', // Include credentials to access the session
+                body:JSON.stringify(removedID),
+            });
+            if (!response.ok) {
+                throw new Error('Failed to remove family members');
+            }
+            const data = await response.json();
+            console.log('Family members removed successfully:', data);
+        } else {
+            setMessage("Please select at least one family member to remove.");
+            return;
+        }    
+
+        setEditProfile((currentVal) => {
+            return {
+                ...currentVal,
+                familyMembers: updatedFamilyMembers
+            }
+        })
+    }
+
 
     const handleSaveButton = async () => {
         try {
