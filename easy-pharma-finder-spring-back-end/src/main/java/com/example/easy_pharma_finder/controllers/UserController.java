@@ -98,10 +98,10 @@ public class UserController {
             savedUser.setInsuranceProvider(user.getInsuranceProvider());
             savedUser.setInsuranceType(user.getInsuranceType());
 
-
             //Store the updated password (if any) in encoded format.
-            if (user.getPassword()!= null) {
+            if (user.getPassword()!= null && !user.getPassword().isBlank()) {
                 savedUser.setPassword(passwordEncoder.encode(user.getPassword()));
+
             }
 
             //Verify if family members exist for the existing user.
