@@ -49,12 +49,12 @@ public class UserController {
     //Add the new user details into the users and family_members tables.
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         //Verify the duplicates in the user table based on "email" column.
-        Optional<User> existingUser = userRepository.findByEmail((user.getEmail()));
+        Optional<User> existingUser = userRepository.findByUserName((user.getUserName()));
         User savedUser;
 
         //Check if user already exist with same email, display the message. Else create new user.
         if (existingUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with same email already exist");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with same username already exist");
         }
 
         //check if family member exists for the primary user.

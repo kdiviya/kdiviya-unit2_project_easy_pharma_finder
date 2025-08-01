@@ -19,7 +19,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/user/login", "/api/user/getSession", "/api/user/submit").permitAll()
+                        .requestMatchers("/api/user/login", "/api/user/getSession", "/api/user/submit", "/api/user/checkUsername/**").permitAll()
                         .requestMatchers("/api/user/**", "/api/user/pharmacy-details/**").authenticated()
                 )
                   .sessionManagement(session -> session.maximumSessions(1)
