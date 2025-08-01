@@ -11,7 +11,8 @@ const ExistingUser = ({userLogged}) => {
     const [isEdit, setIsEdit] = useState(false);
     const [editProfile, setEditProfile] = useState(null);
     const [message, setMessage] = useState("");
-  
+    const [warningMessage , setWarningMessage] = useState("");
+   
 
     //create state variable for country, state and get the values from the package "country-state-city"
     const[countries, setCountries] = useState(Country.getAllCountries());
@@ -83,6 +84,7 @@ const ExistingUser = ({userLogged}) => {
         setMessage("")
         setEditProfile({...userProfile,
                         password:""
+                        
         });
        
 
@@ -120,10 +122,18 @@ const ExistingUser = ({userLogged}) => {
         const updatedFamilyMembers = editProfile.familyMembers.filter(member => !member.isChecked);
         const removedFamilyMembers = editProfile.familyMembers.filter(member => member.isChecked);
         const removedID = removedFamilyMembers.map(member => member.id);
+        
 
-        console.log("checked", removedFamilyMembers);
-        console.log("not checked" ,updatedFamilyMembers);
-     
+        const primaryMembers = editProfile.familyMembers.filter(member => member.relationship === "Self" && member.isChecked);
+       
+        if (primaryMembers.length >0 ) {
+            setWarningMessage("You are not allowed to delete the primary user in the family member list.");
+            setTimeout(() => {
+                setWarningMessage(null); //Reset the message after 3 seconds.
+            }, 3000);
+            return;
+        }
+
         if (removedFamilyMembers.length > 0) {
             const response = await fetch(`http://localhost:8080/api/user/deleteFamilyMember`, {
                 method:'DELETE',
@@ -147,6 +157,16 @@ const ExistingUser = ({userLogged}) => {
     }
 
     const handleSaveButton = async () => {
+        const pwdPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+        if(editProfile.password && !pwdPattern.test(editProfile.password)) {
+            setMessage("Password must be at least 8 characters, include uppercase letter, number, and special character.");
+            return;
+          }
+          setTimeout(() => {
+            setMessage(null); //Reset the message after 3 seconds.
+        }, 3000);
+        
         
         try {
             const response = await fetch(`http://localhost:8080/api/user/updateUser`, {
@@ -188,66 +208,67 @@ const ExistingUser = ({userLogged}) => {
                 <div className="profile">
                     <h2 className="h2-animation">Profile Details</h2>
                     <div>
-                        <label> First Name: </label>
+                        <label> First Name *</label>
                         {isEdit ?
-                            (<input type="text" name="firstName" value={editProfile.firstName} onChange={handleChange} />)
+                            (<input type="text" name="firstName" value={editProfile.firstName || ""} onChange={handleChange} required/>)
                             : 
                             <span>{userProfile.firstName}</span>
                         } 
                     </div>
                     <div>
-                        <label> Middle Name: </label>
+                        <label> Middle Name *</label>
                         {isEdit ?
-                            (<input type="text" name="lastName" value={editProfile.middleName} onChange={handleChange} />)
+                            (<input type="text" name="lastName" value={editProfile.middleName || ""} onChange={handleChange} required/>)
                             : 
                             <span>{userProfile.middleName}</span>
                         }  
                     </div>    
                     <div> 
-                        <label> Last Name: </label>
+                        <label> Last Name *</label>
                         {isEdit ?
-                            (<input type="email" name="email" value={editProfile.lastName} onChange={handleChange} />)
+                            (<input type="email" name="email" value={editProfile.lastName || ""} onChange={handleChange} required/>)
                             : 
                             <span>{userProfile.lastName}</span>
                         }
                     </div> 
 
                     <div>
-                        <label>DOB: </label>
+                        <label>DOB *</label>
                         {isEdit ?
-                            (<input type="date" name="dob" value={editProfile.dob} onChange={handleChange} />)
+                            (<input type="date" name="dob" value={editProfile.dob || ""} onChange={handleChange} required/>)
                             : 
                             <span>{userProfile.dob}</span>
                         }   
                     </div>
 
                     <div>
-                        <label>Username: </label>
+                        <label>Username </label>
                         <span>{userProfile.userName}</span>     
                     </div>
 
                     <div>
-                        <label>Password: </label>
+                        <label>Password *</label>
                         {isEdit ?
-                            (<input type="password" name="password" value={editProfile.password} onChange={handleChange} />)
+                            (<input type="password" name="password" value={editProfile.password || ""} onChange={handleChange} pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$" 
+                                title="Password must be at least 8 characters, include an uppercase letter, a number, and a special character."  required/>)
                             : 
                             <span>**********</span>
                         }   
                     </div>
 
                     <div>
-                        <label> Email: </label>
+                        <label> Email *</label>
                         {isEdit ?
-                            (<input type="email" name="email" value={editProfile.email} onChange={handleChange} />)
+                            (<input type="email" name="email" value={editProfile.email || ""} onChange={handleChange} required/>)
                             : 
                             <span>{userProfile.email}</span>
                         }   
                     </div>
 
                     <div>
-                        <label> Contact Number: </label>
+                        <label> Contact Number *</label>
                         {isEdit ?
-                            (<input type="tel" name="contactNo" value={editProfile.contactNo} onChange={handleChange} />)
+                            (<input type="tel" name="contactNo" value={editProfile.contactNo || ""} onChange={handleChange} required/>)
                             : 
                             <span>{userProfile.contactNo}</span>
                         }   
@@ -255,22 +276,22 @@ const ExistingUser = ({userLogged}) => {
 
                     <div>
                         <fieldset className="location-container">
-                        <legend className="address">Address *</legend>
-                        <label>Street name</label>
+                        <legend className="address">Address </legend>
+                        <label>Street name *</label>
                             {isEdit ?
-                                (<input type="text" name="street" value={editProfile.street} onChange={handleChange} />)
+                                (<input type="text" name="street" value={editProfile.street || ""} onChange={handleChange} required/>)
                                 : 
                                 <span>{userProfile.street}</span>
                             }
-                            <label>City</label>
+                            <label>City *</label>
                             {isEdit ?
-                                (<input type="text" name="city" value={editProfile.city} onChange={handleChange} />)
+                                (<input type="text" name="city" value={editProfile.city || ""} onChange={handleChange} required/>)
                                 : 
                                 <span>{userProfile.city}</span>
                             }
-                            <label>State</label>
+                            <label>State *</label>
                             {isEdit ?
-                                (<select className="dropdown" name="state" value={editProfile.state} onChange={handleChange}>
+                                (<select className="dropdown" name="state" value={editProfile.state || ""} onChange={handleChange} required>
                                     <option value="">Select State</option>
                                     {states.map(state => (
                                         <option key={state.isoCode} value={state.name}>{state.name}</option>
@@ -279,9 +300,9 @@ const ExistingUser = ({userLogged}) => {
                                 : 
                                 <span>{userProfile.state}</span>
                             }
-                            <label>Country</label>
+                            <label>Country *</label>
                             {isEdit ?
-                                (<select className="dropdown" name="country" value={editProfile.country} onChange={handleChange}>
+                                (<select className="dropdown" name="country" value={editProfile.country || ""} onChange={handleChange} required>
                                     <option value="">Select Country</option>
                                     {countries.map(country => (
                                         <option key={country.isoCode} value={country.name}>{country.name}</option>
@@ -290,9 +311,9 @@ const ExistingUser = ({userLogged}) => {
                                 : 
                                 <span>{userProfile.country}</span>
                             }
-                            <label>Zip Code</label>
+                            <label>Zip Code *</label>
                             {isEdit ?
-                                (<input type="text" name="zipCode" value={editProfile.zipCode} onChange={handleChange} />)
+                                (<input type="text" name="zipCode" value={editProfile.zipCode || ""} onChange={handleChange} required/>)
                                 : 
                                 <span>{userProfile.zipCode}</span>
                             }       
@@ -300,9 +321,9 @@ const ExistingUser = ({userLogged}) => {
                     </div>
 
                     <div> 
-                        <label>Insurance Provider</label>  
+                        <label>Insurance Provider *</label>  
                         {isEdit ?
-                           (<select className="dropdown" name="insuranceProvider" value={editProfile.insuranceProvider} onChange={handleChange}>
+                           (<select className="dropdown" name="insuranceProvider" value={editProfile.insuranceProvider || ""} onChange={handleChange} required>
                                 <option value="">Select Insurance Provider</option>
                                 <option value="Aetna">Aetna</option>
                                 <option value="Blue Cross Blue Shield">Blue Cross Blue Shield</option>
@@ -312,22 +333,22 @@ const ExistingUser = ({userLogged}) => {
                         }       
                     </div>
                     <div>
-                        <label>Insurance Number</label>  
+                        <label>Insurance Number *</label>  
                         {isEdit ?
-                            (<input type="text" name="insuranceNumber" value={editProfile.insuranceNumber} onChange={handleChange} />)
+                            (<input type="text" name="insuranceNumber" value={editProfile.insuranceNumber || ""} onChange={handleChange} required/>)
                             : 
                             <span>{userProfile.insuranceNumber}</span>
                         }   
                     </div>
                     <div>
-                        <label>Insurance Type</label>  
+                        <label>Insurance Type *</label>  
                         {isEdit ? (
                             <div>
                                 <label>
-                                    <input type="radio" name="insuranceType" value="HMO" checked = {editProfile.insuranceType === "HMO"} onChange={handleChange} /> HMO
+                                    <input type="radio" name="insuranceType" value="HMO" checked = {editProfile.insuranceType === "HMO"} onChange={handleChange} required/> HMO
                                 </label>
                                 <label>
-                                    <input type="radio" name="insuranceType" value="PPO" checked = {editProfile.insuranceType === "PPO"} onChange={handleChange} /> PPO
+                                    <input type="radio" name="insuranceType" value="PPO" checked = {editProfile.insuranceType === "PPO"} onChange={handleChange} required/> PPO
                                 </label>
                             </div>
                         ): 
@@ -387,10 +408,20 @@ const ExistingUser = ({userLogged}) => {
                     
                     {isEdit ? (
                         <>
-                            <ReusableButton type = "button" id="remove_family_member" name = "remove_family_member" onClick={handleRemoveFamilyMember}>Remove Family Member</ReusableButton>
+                            <ReusableButton type = "button" id="remove_family_member" name = "remove_family_member" onClick={handleRemoveFamilyMember}>Remove Family Member
+
+                                {warningMessage && <p>{warningMessage}</p>}
+                            </ReusableButton>
                             <ReusableButton id="add_family_member" name = "add_family_member" onClick={handleAddFamilyMember}>Add Family Member</ReusableButton>
                             <ReusableButton id="save" name = "save" onClick={handleSaveButton}>Save</ReusableButton> 
-                            <ReusableButton id="cancel" name = "cancel" onClick={() => setIsEdit(false)}>Cancel</ReusableButton>
+                            <ReusableButton id="cancel" name = "cancel" onClick={() => { setIsEdit(false)
+                                                                                        setEditProfile({
+                                                                                            ...userProfile,
+                                                                                            familyMembers: userProfile.familyMembers?.map(m => ({ ...m, isChecked: false }))
+                                                                                            });
+                                                                                         }
+                                                                                }
+                            >Cancel</ReusableButton>
                         </>
                     ) :
                     <ReusableButton id="edit" name = "edit" onClick={handleEdit}>Edit</ReusableButton>
