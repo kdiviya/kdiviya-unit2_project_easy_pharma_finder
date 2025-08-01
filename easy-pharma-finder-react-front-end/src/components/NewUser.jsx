@@ -1,7 +1,6 @@
 import { Country, State } from 'country-state-city';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from './Header';
 import Footer from './Footer';
 import ReusableButton from './ReusableButton';
 import { add } from 'date-fns';
@@ -48,6 +47,8 @@ const NewUser = () => {
         dob: ""});
 
     const [message, setMessage] = useState(null); //State variable to store error messages.
+    const [availableMessage, setAvailableMessage] = useState(null);
+    const [usernameAvailable, setUsernameAvailable] = useState(null);
 
     //Update the state variable when the user enter's the data in the form.
     const handleInputChange = (e) => {
@@ -158,7 +159,29 @@ const NewUser = () => {
        
         }
     
+    const checkUsernameAvailability = async (username) => {
+        if(!username) return;
+    
+        try {
+            const response = await fetch(`http://localhost:8080/api/user/checkUsername?username=${username}`, {
+                method:'GET',
+                credentials: 'include'
+            });
 
+            const data = await response.json();
+            setUsernameAvailable(data);
+
+            !data && setAvailableMessage({"message":"Username is not available. Please choose other name.", "status":"error"})
+            setTimeout(() => {
+                setAvailableMessage(null); //Reset the message after 3 seconds.
+            }, 3000);
+           
+        }
+        catch(error) {
+            console.error("Error in checking username availability");
+        }
+
+    };
     //It triggers, when the user click the submit button.
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -178,6 +201,11 @@ const NewUser = () => {
                 "message":`Please add your name as family member with realtionship "Self" before submitting the form.`,
                 "status":"error"
             });
+            return;
+        }
+
+        if(!usernameAvailable) {
+            setAvailableMessage({"message":"Username is not available. Please choose other name", "status":"error"})
             return;
         }
        
@@ -225,9 +253,12 @@ const NewUser = () => {
                             
                         <label>Select your date of birth *</label>
                         <input type="date" id="dob" name="dob" value={user.dob} onChange={handleInputChange} required></input>
-
+                        
                         <label>Enter your user name *</label>
-                        <input type="text" id="userName" name="userName" value={user.userName} onChange={handleInputChange} autoComplete="userName" required></input>
+                        <div>  
+                            <input type="text" id="userName" name="userName" value={user.userName} onChange={handleInputChange} onBlur={(e) => checkUsernameAvailability(e.target.value)} autoComplete="userName" required></input>
+                            {availableMessage && <p>{availableMessage.message}</p>}
+                        </div>
 
                         <label>Enter your password *</label>
                         <input type="password" id="password" name="password" value={user.password} onChange={handleInputChange} autoComplete="password" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$"
@@ -339,6 +370,7 @@ const NewUser = () => {
                         </div>
                         <div className="button-submit">
                             <ReusableButton type="submit" id="submit" name="submit" >Submit</ReusableButton>
+                            {availableMessage && <p> {availableMessage.message}</p>}
                         </div>
 
                     </form>
