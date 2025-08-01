@@ -38,6 +38,12 @@ public class UserController {
         }
     }
 
+    @GetMapping("/checkUsername")
+    public ResponseEntity<?> checkUserNameAvailability(@RequestParam String username) {
+        boolean isAvailable = userRepository.findByUserName(username).isPresent();
+        return ResponseEntity.ok(!isAvailable);
+    }
+
     //corresponds to url (http://localhost:8080/api/user/submit)
     @PostMapping("/submit")
     //Add the new user details into the users and family_members tables.
