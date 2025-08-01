@@ -198,6 +198,7 @@ const ExistingUser = ({userLogged}) => {
     }   
 
     return(
+        <form onSubmit = {handleSaveButton}>
         <div className="container">
     
             <div className="content">
@@ -216,9 +217,9 @@ const ExistingUser = ({userLogged}) => {
                         } 
                     </div>
                     <div>
-                        <label> Middle Name *</label>
+                        <label> Middle Name </label>
                         {isEdit ?
-                            (<input type="text" name="lastName" value={editProfile.middleName || ""} onChange={handleChange} required/>)
+                            (<input type="text" name="middleName" value={editProfile.middleName || ""} onChange={handleChange} />)
                             : 
                             <span>{userProfile.middleName}</span>
                         }  
@@ -226,7 +227,7 @@ const ExistingUser = ({userLogged}) => {
                     <div> 
                         <label> Last Name *</label>
                         {isEdit ?
-                            (<input type="email" name="email" value={editProfile.lastName || ""} onChange={handleChange} required/>)
+                            (<input type="lastName" name="lastName" value={editProfile.lastName || ""} onChange={handleChange} required/>)
                             : 
                             <span>{userProfile.lastName}</span>
                         }
@@ -247,28 +248,28 @@ const ExistingUser = ({userLogged}) => {
                     </div>
 
                     <div>
-                        <label>Password *</label>
+                        <label>Password </label>
                         {isEdit ?
                             (<input type="password" name="password" value={editProfile.password || ""} onChange={handleChange} pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$" 
-                                title="Password must be at least 8 characters, include an uppercase letter, a number, and a special character."  required/>)
+                                title="Password must be at least 8 characters, include an uppercase letter, a number, and a special character."  />)
                             : 
                             <span>**********</span>
                         }   
                     </div>
 
                     <div>
-                        <label> Email *</label>
+                        <label> Email </label>
                         {isEdit ?
-                            (<input type="email" name="email" value={editProfile.email || ""} onChange={handleChange} required/>)
+                            (<input type="email" name="email" value={editProfile.email || ""} onChange={handleChange} />)
                             : 
                             <span>{userProfile.email}</span>
                         }   
                     </div>
 
                     <div>
-                        <label> Contact Number *</label>
+                        <label> Contact Number </label>
                         {isEdit ?
-                            (<input type="tel" name="contactNo" value={editProfile.contactNo || ""} onChange={handleChange} required/>)
+                            (<input type="tel" name="contactNo" value={editProfile.contactNo || ""} onChange={handleChange} />)
                             : 
                             <span>{userProfile.contactNo}</span>
                         }   
@@ -412,8 +413,8 @@ const ExistingUser = ({userLogged}) => {
 
                                 {warningMessage && <p>{warningMessage}</p>}
                             </ReusableButton>
-                            <ReusableButton id="add_family_member" name = "add_family_member" onClick={handleAddFamilyMember}>Add Family Member</ReusableButton>
-                            <ReusableButton id="save" name = "save" onClick={handleSaveButton}>Save</ReusableButton> 
+                            <ReusableButton type ="button" id="add_family_member" name = "add_family_member" onClick={handleAddFamilyMember}>Add Family Member</ReusableButton>
+                            <ReusableButton id="save" name = "save">Save</ReusableButton> 
                             <ReusableButton id="cancel" name = "cancel" onClick={() => { setIsEdit(false)
                                                                                         setEditProfile({
                                                                                             ...userProfile,
@@ -433,6 +434,7 @@ const ExistingUser = ({userLogged}) => {
             </div>
             <Footer />
         </div>
+        </form>
     )
 }
 

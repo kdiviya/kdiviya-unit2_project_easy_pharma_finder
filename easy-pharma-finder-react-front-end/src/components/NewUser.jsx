@@ -267,26 +267,26 @@ const NewUser = () => {
                         <label>Enter your email address</label>
                         <input type='email' id="email" name="email" value={user.email} onChange={handleInputChange}></input>
                             
-                        <label>Enter your contact number *</label>
-                        <input type="tel" id="contactNo" name="contactNo" placeholder="123-456-6789" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" value={user.contactNo} onChange={handleInputChange} required></input>
+                        <label>Enter your contact number </label>
+                        <input type="tel" id="contactNo" name="contactNo" placeholder="123-456-6789" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" value={user.contactNo} onChange={handleInputChange} ></input>
                             
                         <fieldset className="location-container">
-                            <legend className="address">Address *</legend>
-                            <label>Street name</label>
-                            <input type="text" id="street" name="street" value={user.street} onChange={handleInputChange}></input>
+                            <legend className="address">Address </legend>
+                            <label>Street name *</label>
+                            <input type="text" id="street" name="street" value={user.street} onChange={handleInputChange} required></input>
                             
                             <div className="location">
 
-                                <label>Country</label>
-                                <select className= "dropdown" id="country" name="country" value={ user.country || ""}  onChange={handleCountryChange} >
+                                <label>Country *</label>
+                                <select className= "dropdown" id="country" name="country" value={ user.country || ""}  onChange={handleCountryChange} required>
                                     <option value=''>Select Country</option>
                                     {countries.map((country) => 
                                         (<option key={country.isoCode} value={country.name}>{country.name}</option>)
                                     )}
                                 </select>  
 
-                                <label>State</label>
-                                <select className= "dropdown" disabled={!selectedCountry} id="state" name="state" value={user.state} onChange={handleStateChange}>
+                                <label>State *</label>
+                                <select className= "dropdown" disabled={!selectedCountry} id="state" name="state" value={user.state} onChange={handleStateChange} required>
                                     <option value=''>Select State</option>
                                     {states.map((state) => 
                                         (<option key={state.isoCode} value= {state.name}>{state.name}</option>)
@@ -295,7 +295,7 @@ const NewUser = () => {
 
                             </div>
 
-                            <label>City </label>
+                            <label>City *</label>
                             <input type="text" id="city" name="city" value={user.city} onChange={handleInputChange} required></input>
                             <label>Zip code *</label>
                             <input type="text" id="zipCode" name="zipCode" value={user.zipCode} onChange={handleInputChange} required></input>
