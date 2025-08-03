@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import Footer from './Footer';
 import ReusableButton from './ReusableButton';
 import './css/feedback.css';
-
 import { useLocation } from 'react-router-dom';
 
 //Display the feedback form for the users.

@@ -1,14 +1,11 @@
-import Header from './Header';
 import Footer  from './Footer';
 
-//Header(inlcudes nav links) and Footer components are reused. It displays the project introduction to the user.
+//Displays the project introduction to the user.
 const Introduction = () => {
 
     return (
         
         <div className="container">
-        
-
             <div className="content">
                 <h2 className="h2-animation">Welcome To Easy Pharma Finder !!!</h2>
                 <p>Easy Pharma Finder, is designed to help insured users navigate the complex world of prescription medication costs. With healthcare plans constantly changing and insurance companies frequently shifting medication providers, it can be difficult for patients and caregivers to understand the true cost of their prescriptions.

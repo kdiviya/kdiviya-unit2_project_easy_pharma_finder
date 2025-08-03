@@ -1,34 +1,45 @@
+import { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import React from 'react';
 import Footer  from './Footer';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import ReusableButton from './ReusableButton';
 import './css/login.css';
 
-//Display the username and password when the user clicks the Login menu. {existingUserData} is passed as a props from App.jsx.
+//Display the username and password when the user clicks the Login menu. loggedusername is passed as a props to App.jsx.
 const LoginInfo = ({setUserLogged}) => {
     
     const navigate = useNavigate();
+    const location = useLocation();
 
     //create state variable to store the logged user credentials.
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
-    const [message, setMessage] = useState(""); 
+    const [message, setMessage] = useState(""); //store the validation and notification message to the user.
 
-
+    //Assign username value to variable userName.
     const handleUserNameChange = (e) => {
         setUserName(e.target.value);
     };
-
+ 
+    //Assign password value to variable Password.
     const handlePasswordChange = (e) => {
         setPassword(e.target.value);
     };
 
+    //If the new user click to sign up, it navigates to new user form.
     const handleSignUpButton = () => {
         navigate("/new-user");
     }
 
-    //User clicks the signin button, this function is called.
+    //If user clicks the login menu, it reset the page.
+    useEffect (() => { 
+            setUserName("");
+            setPassword("");
+            setMessage("");
+        
+    }, [location.key]);
+
+    //Validate the user entered credential using the POST method and check user authentication
     const handleSignInButton = async (e) => {
         e.preventDefault();
        
@@ -50,9 +61,9 @@ const LoginInfo = ({setUserLogged}) => {
                     return;
                 }  
 
-                const data = await response.json();
+                const data = await response.json(); 
                 
-                localStorage.setItem("ID", data.sessionID); 
+                localStorage.setItem("ID", data.sessionID); //store the session id and username in the local storage.
                 localStorage.setItem("userName", userName);
                 setUserLogged(userName); 
 
@@ -60,12 +71,13 @@ const LoginInfo = ({setUserLogged}) => {
                 navigate(`/family-members/${userName}`); 
                
             } 
-            
+            //Catch any errors thrown from the try block and log errors for debugging purposes.
             catch (error) {
                 console.error("Error during login:", error);
             }               
         }  
         
+        //Display the message to user if they didnt enter the credentials.
         else {
             setMessage({
                 "message":"Please enter your username and password.",
@@ -74,9 +86,9 @@ const LoginInfo = ({setUserLogged}) => {
         }
     };
 
+   
     return (
         <div className="container">
-         
             <div className="content">
                 <form className = "login-form">
 
@@ -89,9 +101,10 @@ const LoginInfo = ({setUserLogged}) => {
                         <label>Password *</label>
                         <input type="password" id="password" name="password" value={password} onChange={handlePasswordChange} autoComplete='password' ></input>
                     </div>
+
                     {message && (
                         <div className={`${message.status}`}>
-                           <p> {message.message}</p>
+                           <p className="error"> {message.message}</p>
                         </div>
                     )}
                                    
