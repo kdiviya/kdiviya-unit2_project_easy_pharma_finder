@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 //Display the logout message when the user clicks logout.
 const Logout = ({setUserLogged}) => {
     
-    //Clear the username and local storage when the user logs out.
+    //Clear the username and session id from local storage when the user logs out.
    useEffect(() => {
         setUserLogged(null);
         localStorage.removeItem("ID");

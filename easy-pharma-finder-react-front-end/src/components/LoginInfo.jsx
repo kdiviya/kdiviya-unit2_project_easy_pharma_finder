@@ -62,10 +62,9 @@ const LoginInfo = ({setUserLogged}) => {
                 }  
 
                 const data = await response.json(); 
-                console.log("data ",data)
                 localStorage.setItem("ID", data.sessionId); //store the session id and username in the local storage.
-                localStorage.setItem("userName", userName);
-                setUserLogged(userName); 
+                localStorage.setItem("userName", data.userName);
+                setUserLogged(data.userName); 
 
                  //Navigate to the ExistingUser component.
                 navigate(`/family-members/${userName}`); 

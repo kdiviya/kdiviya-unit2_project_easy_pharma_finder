@@ -1,11 +1,9 @@
 import { Country, State } from 'country-state-city';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Footer from './Footer';
 import ReusableButton from './ReusableButton';
 
-
-//Displays the new user form and store the user's details dynamically.
+//Displays the new user form and store the user's details in the back end.
 const NewUser = () => {
    
     //create state variable for country, state and get the values from the package "country-state-city"
@@ -15,9 +13,6 @@ const NewUser = () => {
 
     //Hide the form after clicking submit button and display the confirmation messsage to the user using this state variable.
     const [isFormVisible, setIsformVisible] = useState(true);
-
-    //create state variable to navigate user data to other component "PharmacyFinder".
-    const navigate = useNavigate();
 
     //Create a state variable to store the form data
     const [user, setUser]= useState({
@@ -46,23 +41,23 @@ const NewUser = () => {
         relationship: "",
         dob: ""});
 
-    const [message, setMessage] = useState(null); //State variable to store error messages.
+    const [message, setMessage] = useState(null); //State variable to store messages.
     const [availableMessage, setAvailableMessage] = useState(null);
-    const [usernameAvailable, setUsernameAvailable] = useState(null);
+    const [usernameAvailable, setUsernameAvailable] = useState(null); //validate the new user's username availability using this variable.
 
-    //Update the state variable when the user enter's the data in the form.
+    //Update the state variable when the user enters the data in the form.
     const handleInputChange = (e) => {
 
-        const { name, value } = e.target; //Assign the name and value of the HTMl element.
+        const { name, value } = e.target; //Assign the name and value of the HTML element.
         setUser((currentVal) => ({ //Update the user entered values to the state variable "user".
             ...currentVal,
             [name]:value
         }));
 
     };
-    //Update the state variable when the user enter's the family member details.
+    //Update the state variable when the user enters the family member details.
     const handleMemberChange = (e) => { 
-        const { name, value } = e.target; //Assign the name and value of the HTMl element.
+        const { name, value } = e.target; //Assign the name and value of the HTML element.
         setFamilyMember((currentVal) => ({ //Update the family member details to the state variable "familyMember".
             ...currentVal,
             [name]:value
@@ -102,6 +97,7 @@ const NewUser = () => {
        
     };
 
+    //Add the new family members in the 
     const handleAddFamilyMember = (e) => {
         //Check if the user has entered all the family member details.
         const button = e.target.name; //Get the button id to check which button is clicked.
@@ -114,7 +110,6 @@ const NewUser = () => {
                 return;
             }
 
-            //If the user clicks the "Add Family Member" button, then display the success message
             if(button === "add-family-member") {
 
                 setUser((currentVal) => ({
@@ -131,16 +126,18 @@ const NewUser = () => {
                 setMessage(null);
             }
                    
-        }
+    };
 
-        const handleRemoveFamilyMember = () => {
+    //Update the user's family member array with unchecked members.
+    const handleRemoveFamilyMember = () => {
 
-            setUser((currentVal) => ({
-                ...currentVal,
-                familyMembers: currentVal.familyMembers.filter((member) => !member.isChecked) //Filter the family members based on the checkbox checked state)
-            }));
-        }
+        setUser((currentVal) => ({
+            ...currentVal,
+            familyMembers: currentVal.familyMembers.filter((member) => !member.isChecked) //Filter the family members based on the checkbox checked state)
+        }));
+    };
     
+    //Validate the username is already available or not using the GET() in the backend. And display the validation message to the user.
     const checkUsernameAvailability = async (username) => {
         if(!username) return;
     
@@ -155,17 +152,19 @@ const NewUser = () => {
 
             !data && setAvailableMessage({"message":"Username is not available. Please choose other name.", "status":"error"})       
         }
+        //Catch any errors thrown from the try block and log errors for debugging purposes.
         catch(error) {
             console.error("Error in checking username availability");
         }
 
     };
 
+    //Disappear the username available message  by using onFocus.
     const handleFocus = () => {
         setAvailableMessage(null);
-    }
+    };
 
-    //It triggers, when the user click the submit button.
+    //It triggers, when the user click the submit button. Save all the new user profile details into backend using POST().
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -187,11 +186,13 @@ const NewUser = () => {
             return;
         }
 
+        //check if the username change the name, if it is already available.
         if(!usernameAvailable) {
             setAvailableMessage({"message":"Username is not available. Please choose other name", "status":"error"})
             return;
         }
        
+        //
         try {
             const response = await fetch('http://localhost:8080/api/user/submit', {
 				method: 'POST',
@@ -201,24 +202,27 @@ const NewUser = () => {
 				body: JSON.stringify(user),
 			});
 
+             //Display the error messsage if response is not found
             if(!response.ok) {
                 throw new Error('Failed to submit the form. Please try again later.');
             }
 
             const data = await response.json();
-            setIsformVisible(false);   
+            setIsformVisible(false);   //If the user clicks submit button, set the form to invisible.
 		} 
+
+        //Catch any errors thrown from the try block and log errors for debugging purposes.
         catch (error) {
 			console.error(error.message);
         }
     
     };
 
+    //This component returns a proper HTML structure inside the container div.
     return (
         <div className="container">
-           
-
-           { isFormVisible ? 
+        
+           { isFormVisible ?  //used conditional rendering for displaying the new user form
 
                 (<div className="content">
                     <h2 className='h2-animation'>New User Form </h2>
@@ -253,9 +257,10 @@ const NewUser = () => {
                             
                         <fieldset className="location-container">
                             <legend className="address">Address </legend>
+
                             <div>
-                            <label>Street name *</label>
-                            <input type="text" id="street" name="street" value={user.street} onChange={handleInputChange} required></input>
+                                <label>Street name *</label>
+                                <input type="text" id="street" name="street" value={user.street} onChange={handleInputChange} required></input>
                             </div>
                             
                             <div>
@@ -267,6 +272,7 @@ const NewUser = () => {
                                     )}
                                 </select>  
                             </div>
+
                             <div>
                                 <label>State *</label>
                                 <select className= "dropdown" disabled={!selectedCountry} id="state" name="state" value={user.state} onChange={handleStateChange} required>
@@ -276,14 +282,17 @@ const NewUser = () => {
                                     )}
                                 </select>
                             </div>
+
                             <div>
-                            <label>City *</label>
-                            <input type="text" id="city" name="city" value={user.city} onChange={handleInputChange} required></input>
+                                <label>City *</label>
+                                <input type="text" id="city" name="city" value={user.city} onChange={handleInputChange} required></input>
                             </div>
+
                             <div>
-                            <label>Zip code *</label>
-                            <input type="text" id="zipCode" name="zipCode" value={user.zipCode} onChange={handleInputChange} required></input>
+                                <label>Zip code *</label>
+                                <input type="text" id="zipCode" name="zipCode" value={user.zipCode} onChange={handleInputChange} required></input>
                             </div>
+
                         </fieldset>
 
                         <label>Select your insurance provider *</label>
@@ -313,6 +322,7 @@ const NewUser = () => {
 
                         <label>Name</label>
                         <input type="text" id="name" name="name" value={familyMember.name} onChange={handleMemberChange} ></input>
+
                         <label>Relationship</label>
                         <select className="dropdown" id="relationship" name="relationship" value={familyMember.relationship} onChange={handleMemberChange} >
                             <option value=''>Select Relationship</option>
@@ -323,6 +333,7 @@ const NewUser = () => {
                             <option value='Sibling'>Sibling</option>
                             <option value='Other'>Other</option>
                         </select>
+
                         <label>DOB</label>
                         <input type="date" id="family-dob" name="dob" value={familyMember.dob} onChange={handleMemberChange} ></input>
 
@@ -342,16 +353,17 @@ const NewUser = () => {
                                                     <th>DOB</th>
                                                 </tr>
                                             </thead>
+
                                             {
                                                 user.familyMembers.map((member, index) => (
                                                     <tr key={index}>
                                                         <td>
-                                                        <input type="checkbox" checked={member.isChecked} onChange= { () => { 
-                                                            const updatedMembers =  user.familyMembers.map((m, i) => i === index ? {...m, isChecked: !m.isChecked} : m);
-                                                            setUser((currentVal) => ({
-                                                                ...currentVal,
-                                                                familyMembers: updatedMembers
-                                                            }));  
+                                                            <input type="checkbox" checked={member.isChecked} onChange= { () => { 
+                                                                const updatedMembers =  user.familyMembers.map((m, i) => i === index ? {...m, isChecked: !m.isChecked} : m);
+                                                                setUser((currentVal) => ({
+                                                                        ...currentVal,
+                                                                        familyMembers: updatedMembers
+                                                                }));  
                                                             }}/>
                                                         </td>
                                                         <td>{member.name}</td>
@@ -369,6 +381,7 @@ const NewUser = () => {
                         <div className="error-message">
                             {message && <p className="error">{message.message}</p>}
                         </div>
+                        
                         <div className="button-submit">
                             <ReusableButton type="submit" id="submit" name="submit" >Submit</ReusableButton>
                             {availableMessage && <p> {availableMessage.message}</p>}
