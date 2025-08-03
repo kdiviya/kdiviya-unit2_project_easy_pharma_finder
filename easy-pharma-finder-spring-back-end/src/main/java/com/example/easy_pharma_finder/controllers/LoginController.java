@@ -46,7 +46,7 @@ public class LoginController {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
 
                     return ResponseEntity.ok(Map.of("message", "Login successful",
-                            "Session Id", session.getId(),
+                            "sessionId", session.getId(),
                             "userName", userExist.getUserName()));
                 }
             }
