@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useState } from 'react';
 import About from './components/About';
 import Introduction from './components/Introduction';
 import NewUser from './components/NewUser';
@@ -7,13 +8,13 @@ import LoginInfo from './components/LoginInfo';
 import Header from './components/Header';
 import ExistingUser from './components/ExistingUser';
 import Feedback from './components/Feedback';
-import { useState } from 'react';
 import Logout from './components/Logout';
 import './App.css';
 import FamilyMember from './components/FamilyMember';
 
 function App() {
 
+  //Get the username from the local storage and pass this as props to Header.
   const [userLogged, setUserLogged] = useState(() => {
                                                       return localStorage.getItem("userName") || null;
                                                       }
