@@ -6,6 +6,7 @@ import PharmacyFinder from './components/PharmacyFinder';
 import LoginInfo from './components/LoginInfo';
 import Header from './components/Header';
 import ExistingUser from './components/ExistingUser';
+import Feedback from './components/Feedback';
 import { useState } from 'react';
 import Logout from './components/Logout';
 import './App.css';
@@ -48,6 +49,9 @@ function App() {
 
         <Route path = "/logout" element={<Logout setUserLogged = {setUserLogged}/>}
         />   
+
+        <Route path = "/feedback" element={<Feedback />}
+        />  
 
       </Routes>
     </Router>

@@ -12,6 +12,16 @@
     margin: 10px;
 }
 
+.profile div {
+    margin: 10px 0;
+}
+.profile label {
+    width: 200px;
+    display: inline-block;
+}
+.profile .location-container label {
+    width: 180px;
+}
 .profile p,
 .profile label {
     font-weight: bold;
@@ -25,29 +35,28 @@
 .profile span {
     margin-left: 3px;
 }
-
-.edit-view-button {
-    display: flex;
-    gap: 10px;
-    width: 300px;
-    height: 50px;
+.btn-container {
+    text-align: center;
 }
-
-#view-button:hover,
-#edit-button:hover,
-#save-button:hover {
+.btn-edit {
+    cursor: pointer;
+    font-size: 18px;
+    margin: 0 10px;
+}
+.btn-edit:hover {
     background-color: #72c0ee;
 }
 
-#view-button,
-#edit-button {
-    cursor: pointer;
+.relation-select {
     font-size: 18px;
+    padding: 5px;
 }
-
-#save-button {
-    cursor: pointer;
-    font-size: 18px;
-    width: 300px;
-    height: 50px;
+.dob-input {
+    padding: 1px;
+}
+.family-members {
+    width: 100%;
+}
+.family-members th, .family-members td {
+    border-color: #fff;
 }

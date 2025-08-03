@@ -126,7 +126,10 @@ p {
   font-size: 18px;
   width: 200px;
   height: 33px;
-  margin-right: 8px;
+}
+.provider-dropdown{
+  font-size: 18px;
+  height: 33px;
 }
 
 .location {
@@ -135,7 +138,8 @@ p {
 
 .location label,
 .location-container label {
-  margin-right: 10px;
+  display: inline-block;
+  width: 200px;
 }
 
 .insurance-type {
@@ -266,13 +270,16 @@ fieldset {
     min-height: 100%;
     justify-content: left;
   }
-
+  .profile {
+    width: 600px !important;
+  }
 }
 
 @media screen and (max-width:575px) {
 
   .content {
     padding: 10px;
+    width: 95%;
   }
   
   .new-user-form input,
@@ -334,7 +341,34 @@ fieldset {
     width: 200px;   
   }
 
+  .feedback input, .feedback textarea {
+    width: 94%;
+  }
+
+  .profile {
+    width: 95% !important;
+  }
+
+  .profile label {
+    width: 150px;
+  }
+}
+#add-family-member {
+  margin-top: 10px;
+  font-size: 18px;
+}
+#remove-family-member {
+  font-size: 18px;
 }
 
+.family-member {
+  display: block;
+}
+.family-member th {
+  font-weight: normal;
+}
+.error {
+  color: rgb(216, 14, 14);
+}
 
 

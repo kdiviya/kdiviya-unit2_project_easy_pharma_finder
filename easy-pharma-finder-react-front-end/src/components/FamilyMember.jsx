@@ -2,7 +2,7 @@ import { Link} from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Footer from './Footer';
-import './css/existing-user.css';
+import './css/family-member.css';
 
 //Display the profile details when the existing user logged-in.
 const FamilyMember = () => {
@@ -45,9 +45,9 @@ const FamilyMember = () => {
             <div className="content">
                 
                 <div className="profile">
-                    <h2 className="h2-animation">Hello {familyMembers.find(members => members.relationship === "Self") ?.name}, Welcome to Easy Pharma Finder!!!</h2>
+                    <h3 className="h2-animation">Hello {familyMembers.find(members => members.relationship === "Self") ?.name}, Welcome to Easy Pharma Finder!!!</h3>
                     <p>Below are the user/s associated with your account. Please click the below link to view their medication.</p>
-                    <ul>
+                    <ul className = "family_member">
                         {[...familyMembers]
                         .sort((a,b) => (a.relationship === "Self"? -1 : 1)) // Sort so that self is always first
                         .map(member => {
@@ -55,7 +55,7 @@ const FamilyMember = () => {
                             return (
                             <Link to = {"/pharma-finder"} state = {{memberId:member.id, userName:userName}} key= {member.id} className='family-member-link'>
                                 <li key = {member.id} className="family-member">
-                                    <p>{member.relationship === "self"? `Primary user - ${member.name}`: `${member.name}`}</p>
+                                    {member.relationship === "Self"? `${member.name} (Primary user)`: `${member.name}`}
                                 </li>
                             </Link>); }
                         )}

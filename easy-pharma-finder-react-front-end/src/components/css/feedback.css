@@ -1,0 +1,33 @@
+.feedback label {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+.feedback input {
+    font-size:18px;
+    display: grid;
+    width: 100%;
+    padding: 10px;
+}
+
+.feedback textarea {
+    font-size:18px;
+    display: grid;
+    width: 100%;
+    padding: 10px;
+}
+
+.content {
+    width: 800px;
+}
+
+#fb-submit {
+    margin-top: 20px;
+    font-size: 20px;
+    width: 100px;
+    cursor: pointer;
+ }
+ 
+ #fb-submit:hover {
+    background-color: #72c0ee;
+ }
+ 

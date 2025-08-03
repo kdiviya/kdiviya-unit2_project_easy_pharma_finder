@@ -108,7 +108,7 @@ const PharmacyFinder = () => {
                                             <td>${medication.medicationCost}</td>
                                             <td>{medication.insurancePaidPercent}%</td>
                                             <td>${medication.copay.toFixed(2)}</td>  
-                                            <td>{medication.homeDelivery === true ? "Available" : "Not available"}</td>    
+                                            <td>{medication.homeDelivery === true ? "Available" : "Unavailable"}</td>    
                                         </tr>
                                     ))}
         

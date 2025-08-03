@@ -95,10 +95,10 @@ const LoginInfo = ({setUserLogged}) => {
                         </div>
                     )}
                                    
-                        
-                    <ReusableButton id="login-button" type="submit" name="signin" onClick={handleSignInButton}>SignIn</ReusableButton>
-                    <ReusableButton id="newuser-button" type="submit" name="signup" onClick={handleSignUpButton}>SignUp</ReusableButton>
-
+                    <div>  
+                        <ReusableButton id="login-button" type="submit" name="signin" onClick={handleSignInButton}>SignIn</ReusableButton>
+                        <ReusableButton id="newuser-button" type="submit" name="signup" onClick={handleSignUpButton}>SignUp</ReusableButton>
+                    </div>  
                 </form>
             </div>
 

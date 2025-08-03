@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Footer from './Footer';
 import ReusableButton from './ReusableButton';
-import { add } from 'date-fns';
+
 
 //Displays the new user form and store the user's details dynamically.
 const NewUser = () => {
@@ -128,16 +128,8 @@ const NewUser = () => {
                     relationship:'',
                     dob:'',
                 });
-            
-                setMessage({
-                    "message":"Family member added successfully!",
-                    "status":"success"
-                });
+                setMessage(null);
             }
-
-            setTimeout(() => {
-                setMessage(null); //Reset the message after 3 seconds.
-            }, 3000);
                    
         }
 
@@ -147,16 +139,6 @@ const NewUser = () => {
                 ...currentVal,
                 familyMembers: currentVal.familyMembers.filter((member) => !member.isChecked) //Filter the family members based on the checkbox checked state)
             }));
-
-            setMessage({
-                "message":"Family member removed successfully!",
-                "status":"success"
-            });
-
-            setTimeout(() => {
-                setMessage(null); //Reset the message after 3 seconds.
-            }, 3000);
-       
         }
     
     const checkUsernameAvailability = async (username) => {
@@ -171,17 +153,18 @@ const NewUser = () => {
             const data = await response.json();
             setUsernameAvailable(data);
 
-            !data && setAvailableMessage({"message":"Username is not available. Please choose other name.", "status":"error"})
-            setTimeout(() => {
-                setAvailableMessage(null); //Reset the message after 3 seconds.
-            }, 3000);
-           
+            !data && setAvailableMessage({"message":"Username is not available. Please choose other name.", "status":"error"})       
         }
         catch(error) {
             console.error("Error in checking username availability");
         }
 
     };
+
+    const handleFocus = () => {
+        setAvailableMessage(null);
+    }
+
     //It triggers, when the user click the submit button.
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -255,10 +238,8 @@ const NewUser = () => {
                         <input type="date" id="dob" name="dob" value={user.dob} onChange={handleInputChange} required></input>
                         
                         <label>Enter your user name *</label>
-                        <div>  
-                            <input type="text" id="userName" name="userName" value={user.userName} onChange={handleInputChange} onBlur={(e) => checkUsernameAvailability(e.target.value)} autoComplete="userName" required></input>
-                            {availableMessage && <p>{availableMessage.message}</p>}
-                        </div>
+                        <input type="text" id="userName" name="userName" value={user.userName} onChange={handleInputChange} onBlur={(e) => checkUsernameAvailability(e.target.value)} onFocus={handleFocus} autoComplete="username" required></input>
+                        {availableMessage && <p className='error'>{availableMessage.message}</p>}
 
                         <label>Enter your password *</label>
                         <input type="password" id="password" name="password" value={user.password} onChange={handleInputChange} autoComplete="password" pattern="^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$"
@@ -272,11 +253,12 @@ const NewUser = () => {
                             
                         <fieldset className="location-container">
                             <legend className="address">Address </legend>
+                            <div>
                             <label>Street name *</label>
                             <input type="text" id="street" name="street" value={user.street} onChange={handleInputChange} required></input>
+                            </div>
                             
-                            <div className="location">
-
+                            <div>
                                 <label>Country *</label>
                                 <select className= "dropdown" id="country" name="country" value={ user.country || ""}  onChange={handleCountryChange} required>
                                     <option value=''>Select Country</option>
@@ -284,7 +266,8 @@ const NewUser = () => {
                                         (<option key={country.isoCode} value={country.name}>{country.name}</option>)
                                     )}
                                 </select>  
-
+                            </div>
+                            <div>
                                 <label>State *</label>
                                 <select className= "dropdown" disabled={!selectedCountry} id="state" name="state" value={user.state} onChange={handleStateChange} required>
                                     <option value=''>Select State</option>
@@ -292,18 +275,19 @@ const NewUser = () => {
                                         (<option key={state.isoCode} value= {state.name}>{state.name}</option>)
                                     )}
                                 </select>
-
                             </div>
-
+                            <div>
                             <label>City *</label>
                             <input type="text" id="city" name="city" value={user.city} onChange={handleInputChange} required></input>
+                            </div>
+                            <div>
                             <label>Zip code *</label>
                             <input type="text" id="zipCode" name="zipCode" value={user.zipCode} onChange={handleInputChange} required></input>
-                            
+                            </div>
                         </fieldset>
 
                         <label>Select your insurance provider *</label>
-                        <select className="dropdown" id="insuranceProvider" name="insuranceProvider" value={user.insuranceProvider} onChange={handleInputChange} required>
+                        <select className="provider-dropdown" id="insuranceProvider" name="insuranceProvider" value={user.insuranceProvider} onChange={handleInputChange} required>
                             <option value=''>Select Insurance Provider</option>
                             <option value='Aetna'>Aetna</option>
                             <option value='Blue Cross Blue Shield'>Blue Cross Blue Shield</option>
@@ -344,26 +328,43 @@ const NewUser = () => {
 
                         <div>
                             <ReusableButton id="add-family-member" type="button" name="add-family-member" onClick={handleAddFamilyMember}>Add Family Member</ReusableButton>
-                            
-                            <h4>Family Members:</h4>
-                            <ul>
-                                {user.familyMembers.map((member, index) => (
-                                    <li key={index}>
-                                        <input type="checkbox" checked={member.isChecked} onChange= { () => { 
-                                            const updatedMembers =  user.familyMembers.map((m, i) => i === index ? {...m, isChecked: !m.isChecked} : m);
-                                            setUser((currentVal) => ({
-                                                ...currentVal,
-                                                familyMembers: updatedMembers
-                                            }));  
-                                            }}/>
+                            { user.familyMembers.length > 0 &&
+                                <>
+                                    <h4>Family Members:</h4>
+                                    <div>
+                                        <table className="family-member">
 
-                                        {member.name} - {member.relationship} - {member.dob}
-                                    </li>
-                            ))}
-                            </ul>
-
-                            <ReusableButton id="remove-family-member" type="button" name="remove-family-member" onClick={handleRemoveFamilyMember}>Remove Family Member</ReusableButton>    
-
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>Name</th>
+                                                    <th>Relationship</th>
+                                                    <th>DOB</th>
+                                                </tr>
+                                            </thead>
+                                            {
+                                                user.familyMembers.map((member, index) => (
+                                                    <tr key={index}>
+                                                        <td>
+                                                        <input type="checkbox" checked={member.isChecked} onChange= { () => { 
+                                                            const updatedMembers =  user.familyMembers.map((m, i) => i === index ? {...m, isChecked: !m.isChecked} : m);
+                                                            setUser((currentVal) => ({
+                                                                ...currentVal,
+                                                                familyMembers: updatedMembers
+                                                            }));  
+                                                            }}/>
+                                                        </td>
+                                                        <td>{member.name}</td>
+                                                        <td>{member.relationship}</td>
+                                                        <td>{member.dob}</td>
+                                                    </tr>
+                                                ))
+                                            }
+                                        </table>
+                                    </div>
+                                    <ReusableButton id="remove-family-member" type="button" name="remove-family-member" onClick={handleRemoveFamilyMember}>Remove Family Member</ReusableButton>
+                                </>
+                            }
                         </div>
                         <div className="error-message">
                             {message && <p className="error">{message.message}</p>}
@@ -378,7 +379,7 @@ const NewUser = () => {
 
                 :
 
-                (<div className='message'>
+                (<div className='content'>
                     <p>Your user account is created successfully. Please click the login button to login.</p>     
                 </div>)   
 

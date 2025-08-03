@@ -1,13 +1,10 @@
-import Header from './Header';
 import Footer  from './Footer';
 
 //Header(inlcudes nav links) and Footer components are reused. It is the about page for the users.
 const About = () => {
     
     return(
-        <div className="container">
-
-           
+        <div className="container">           
             <div className="content">
                 <h2 className='h2-animation'>Know More, Pay Less – About My Journey</h2>
 
