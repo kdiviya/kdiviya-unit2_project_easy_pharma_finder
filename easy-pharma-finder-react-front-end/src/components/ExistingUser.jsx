@@ -39,7 +39,9 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
                 data.password=null;
                 setUserProfile(data);
             
-            } catch (error) {
+            } 
+            //Catch any errors thrown from the try block and log errors for debugging purposes.
+            catch (error) {
                 console.error('Error fetching user profile:', error);
             }
         };
@@ -219,7 +221,7 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
 
                 {/* Display messages using conditional rendering controlled by React state */}
                 <div className="content">
-                    <div>
+                    <div className="message-div">
                         {message && <p className="message-update">{message}</p>}
                     </div>  
 
@@ -307,47 +309,51 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
                                         <span>{userProfile.street}</span>
                                     }
                                 </div>
+
                                 <div>
-                                <label>City *</label>
-                                {isEdit ?
-                                    (<input type="text" name="city" value={editProfile.city || ""} onChange={handleChange} required/>)
-                                    : 
-                                    <span>{userProfile.city}</span>
-                                }
+                                    <label>City *</label>
+                                    {isEdit ?
+                                        (<input type="text" name="city" value={editProfile.city || ""} onChange={handleChange} required/>)
+                                        : 
+                                        <span>{userProfile.city}</span>
+                                    }
                                 </div>
+
                                 <div>
-                                <label>State *</label>
-                                {isEdit ?
-                                    (<select className="dropdown" name="state" value={editProfile.state || ""} onChange={handleChange} required>
-                                        <option value="">Select State</option>
-                                        {states.map(state => (
-                                            <option key={state.isoCode} value={state.name}>{state.name}</option>
-                                        ))}
-                                    </select>)
-                                    : 
-                                    <span>{userProfile.state}</span>
-                                }
+                                    <label>State *</label>
+                                    {isEdit ?
+                                        (<select className="dropdown" name="state" value={editProfile.state || ""} onChange={handleChange} required>
+                                            <option value="">Select State</option>
+                                            {states.map(state => (
+                                                <option key={state.isoCode} value={state.name}>{state.name}</option>
+                                            ))}
+                                        </select>)
+                                        : 
+                                        <span>{userProfile.state}</span>
+                                    }
                                 </div>
+
                                 <div>
                                 <label>Country *</label>
-                                {isEdit ?
-                                    (<select className="dropdown" name="country" value={editProfile.country || ""} onChange={handleChange} required>
-                                        <option value="">Select Country</option>
-                                        {countries.map(country => (
-                                            <option key={country.isoCode} value={country.name}>{country.name}</option>
-                                        ))}
-                                    </select>)
-                                    : 
-                                    <span>{userProfile.country}</span>
-                                }
+                                    {isEdit ?
+                                        (<select className="dropdown" name="country" value={editProfile.country || ""} onChange={handleChange} required>
+                                            <option value="">Select Country</option>
+                                            {countries.map(country => (
+                                                <option key={country.isoCode} value={country.name}>{country.name}</option>
+                                            ))}
+                                        </select>)
+                                        : 
+                                        <span>{userProfile.country}</span>
+                                    }
                                 </div>
+
                                 <div>
-                                <label>Zip Code *</label>
-                                {isEdit ?
-                                    (<input type="text" name="zipCode" value={editProfile.zipCode || ""} onChange={handleChange} required/>)
-                                    : 
-                                    <span>{userProfile.zipCode}</span>
-                                }   
+                                    <label>Zip Code *</label>
+                                    {isEdit ?
+                                        (<input type="text" name="zipCode" value={editProfile.zipCode || ""} onChange={handleChange} required/>)
+                                        : 
+                                        <span>{userProfile.zipCode}</span>
+                                    }   
                                 </div>
                             </fieldset>
                         </div>
@@ -395,29 +401,25 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
                         {!isEdit ? 
                                 (
                                     userProfile.familyMembers && userProfile.familyMembers.length > 0 ? 
-                                    ( <table className="family-members">
+                                    (<table className="family-members">
                                         <thead>
                                             <tr>
-                                            <th>
-                                                Name
-                                            </th>
-                                            <th>
-                                                DOB
-                                            </th>
-                                            <th>
-                                                Relationship
-                                            </th>
+                                                <th>Name</th>
+                                                <th>DOB</th>
+                                                <th>Relationship</th>
                                             </tr>
                                         </thead>
+
                                         <tbody>
-                                        {userProfile.familyMembers.map((member, index) => (
-                                            <tr key={index}>
-                                            <td>{member.name}</td><td>{member.dob}</td><td>{member.relationship}</td>
-                                            </tr>
-                                        ))}
+                                            {userProfile.familyMembers.map((member, index) => (
+                                                <tr key={index}>
+                                                    <td>{member.name}</td><td>{member.dob}</td><td>{member.relationship}</td>
+                                                </tr>
+                                            ))}
                                         </tbody>
                                     </table>)
                                     : 
+
                                     (<div>
                                         (No family members added.)
                                     </div>)   
@@ -428,44 +430,40 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
                                     <table className="family-members">
                                         <thead>
                                             <tr>
-                                            <th></th>
-                                            <th>
-                                                Name
-                                            </th>
-                                            <th>
-                                                DOB
-                                            </th>
-                                            <th>
-                                                Relationship
-                                            </th>
+                                                <th></th>
+                                                <th>Name</th>
+                                                <th>DOB</th>
+                                                <th>Relationship</th>
                                             </tr>
                                         </thead>
+
                                         <tbody>
-                                        {editProfile.familyMembers.map((member, index) => (
-                                        <tr key={index}>
-                                            <td>
-                                            <input type="checkbox" checked={member.isChecked} onChange={(e) => handleCheckboxChange(e, index)} />
-                                            </td>
-                                            <td>
-                                            <input type="text" value={member.name} onChange={(e) => handleFamilyMemberChange(e, index, 'name')} />
-                                            </td>
-                                            <td>
-                                                <input className="dob-input" type="date" value={member.dob} onChange={(e) => handleFamilyMemberChange(e, index, 'dob')} />
-                                            </td>
-                                            <td>
-                                                <select className="relation-select" value={member.relationship} onChange={(e) => handleFamilyMemberChange(e, index, 'relationship')}>
-                                                    <option value=''>Select Relationship</option>
-                                                    <option value='Self'>Self</option>
-                                                    <option value='Spouse'>Spouse</option>
-                                                    <option value='Child'>Child</option>
-                                                    <option value='Parent'>Parent</option>
-                                                    <option value='Sibling'>Sibling</option>
-                                                    <option value='Other'>Other</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        ))}
-                                    </tbody>
+                                            {editProfile.familyMembers.map((member, index) => (
+                                                <tr key={index}>
+                                                    <td>
+                                                        <input type="checkbox" checked={member.isChecked} onChange={(e) => handleCheckboxChange(e, index)} />
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" value={member.name} onChange={(e) => handleFamilyMemberChange(e, index, 'name')} />
+                                                    </td>
+                                                    <td>
+                                                        <input className="dob-input" type="date" value={member.dob} onChange={(e) => handleFamilyMemberChange(e, index, 'dob')} />
+                                                    </td>
+                                                    <td>
+                                                        <select className="relation-select" value={member.relationship} onChange={(e) => handleFamilyMemberChange(e, index, 'relationship')}>
+                                                            <option value=''>Select Relationship</option>
+                                                            <option value='Self'>Self</option>
+                                                            <option value='Spouse'>Spouse</option>
+                                                            <option value='Child'>Child</option>
+                                                            <option value='Parent'>Parent</option>
+                                                            <option value='Sibling'>Sibling</option>
+                                                            <option value='Other'>Other</option>
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+
                                     </table>)
                                 :
                                     (<div>
@@ -480,6 +478,7 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
                                 <div>
                                     {warningMessage && <p className='error'>{warningMessage}</p>}
                                 </div>
+                                
                                 <ReusableButton className="btn-edit" type = "button" id="remove_family_member" name = "remove_family_member" onClick={handleRemoveFamilyMember}>Remove Family Member
                                 </ReusableButton>
 

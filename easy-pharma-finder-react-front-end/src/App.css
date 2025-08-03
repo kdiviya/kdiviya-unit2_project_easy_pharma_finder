@@ -270,6 +270,7 @@ fieldset {
     min-height: 100%;
     justify-content: left;
   }
+
   .profile {
     width: 600px !important;
   }
@@ -352,11 +353,14 @@ fieldset {
   .profile label {
     width: 150px;
   }
+
 }
+
 #add-family-member {
   margin-top: 10px;
   font-size: 18px;
 }
+
 #remove-family-member {
   font-size: 18px;
 }
@@ -364,9 +368,11 @@ fieldset {
 .family-member {
   display: block;
 }
+
 .family-member th {
   font-weight: normal;
 }
+
 .error {
   color: rgb(216, 14, 14);
 }
