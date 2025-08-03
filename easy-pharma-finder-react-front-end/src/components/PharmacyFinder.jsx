@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Footer from './Footer';
 import ReusableButton from './ReusableButton';
 import './css/pharmacy.css';
@@ -6,7 +7,9 @@ import './css/pharmacy.css';
 
 //Display the detailed cost breakdown across the pharmacies based on the user's zipcode.
 const PharmacyFinder = () => { 
- 
+
+    const location = useLocation();
+    const {memberId, userName} = location.state || {}; //get the family member id and username passed from FamilyMember.jsx
     const [costBreakdownData , setCostBreakdownData] = useState([]); //Assign the medication cost breakdown to this array.
     const [message, setMessage] = useState(false);
    
