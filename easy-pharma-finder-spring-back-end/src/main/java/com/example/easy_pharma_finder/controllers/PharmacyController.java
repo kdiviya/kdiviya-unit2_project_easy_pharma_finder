@@ -1,15 +1,14 @@
 package com.example.easy_pharma_finder.controllers;
 
-
 import com.example.easy_pharma_finder.models.*;
 import com.example.easy_pharma_finder.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.*;
 
+//Define the connection between front end and back end
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true", maxAge = 3600)
 @RestController
 @RequestMapping("/api/user")
@@ -26,9 +25,11 @@ public class PharmacyController {
     @Autowired
     private PharmacyMedicationCostRepository pharmacyMedicationCostRepository;
 
+    //corresponds to url (http://localhost:8080/api/user/pharmacy-details?userName="logged in username"&familyMemberId="id")
     @GetMapping("/pharmacy-details")
+    //Get the pharmacy details based on user's zipcode and get the medication based on the family member id
     public ResponseEntity<?> getPharmacyDetails(@RequestParam String userName, @RequestParam int familyMemberId) {
-        List<String> pharmacyNames = new ArrayList<>();
+
         Optional<User> user = userRepository.findByUserName(userName);
         double insurancePaidPercent = 0.0;
         List<Map<String, Object>> responseDetails= new ArrayList<>();
@@ -54,8 +55,11 @@ public class PharmacyController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No medications found");
         }
 
+        //Iterate over the loop for all the medication associated with particular family member
         for (Medication med : medications) {
             for (Pharmacy pharmacy : pharmacies) {
+
+                //query the table based on med and pharmacy id
                 Optional<PharmacyMedicationCost> medPercent = pharmacyMedicationCostRepository.findByPharmacyIdAndMedicationId(pharmacy.getId(), med.getId());
 
                 if (medPercent.isPresent()) {

@@ -2,13 +2,14 @@ package com.example.easy_pharma_finder.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+//create Family member table with the below fields.
 @Entity
 public class FamilyMember {
+
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
@@ -16,13 +17,15 @@ public class FamilyMember {
     private LocalDate dob;
     private String relationship;
 
+    //Defines many to 1 relationship between family member and user table and create a foreign key column user_id
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonBackReference
+    @JsonBackReference //avoid the infinite loop of user within family member
     private User user;
 
+    //Define many to many relationship between family member and family member medication table.
     @ManyToMany
-    @JoinTable(
+    @JoinTable( //Join with the table family_member_medication
             name = "family_member_medication",
             joinColumns = @JoinColumn(name="family_member_id"),
             inverseJoinColumns = @JoinColumn(name="medication_id")
@@ -90,7 +93,6 @@ public class FamilyMember {
     @Override
     public String toString() {
         return "FamilyMember{Id=" + id +
-
                 ", name='" + name + '\'' +
                 ", dob=" + dob +
                 ", relationship='" + relationship + '\'' +

@@ -2,6 +2,7 @@ package com.example.easy_pharma_finder.models;
 
 import jakarta.persistence.*;
 
+//create medication table with below fields.
 @Entity
 public class Medication {
     @Id
@@ -11,7 +12,6 @@ public class Medication {
     private String medicationName;
     private double actualCost;
 
-
     public Medication() {
     }
 
@@ -19,7 +19,6 @@ public class Medication {
         this.id = id;
         this.medicationName = medicationName;
         this.actualCost = actualCost;
-
     }
 
     public int getId() {
@@ -45,8 +44,6 @@ public class Medication {
     public void setActualCost(double actualCost) {
         this.actualCost = actualCost;
     }
-
-
 
     @Override
     public String toString() {

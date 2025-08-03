@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.List;
 import java.util.Optional;
 
+//Define the connection between front end and back end
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true", maxAge = 3600)
 @RestController
 @RequestMapping("/api/user")
@@ -29,6 +30,7 @@ public class UserController {
     //Display the user details for the logged-in user.
     public ResponseEntity<?> getUserDetails(@RequestParam String userName) {
         Optional<User> userProfile  = userRepository.findByUserName(userName);
+
         if (userProfile.isPresent()) {
             User user = userProfile.get();
             return ResponseEntity.ok(user);
@@ -38,7 +40,10 @@ public class UserController {
         }
     }
 
+
+    //corresponds to url (http://localhost:8080/api/user/checkUsername?username="username")
     @GetMapping("/checkUsername")
+    //Validate username availability
     public ResponseEntity<?> checkUserNameAvailability(@RequestParam String username) {
         boolean isAvailable = userRepository.findByUserName(username).isPresent();
         return ResponseEntity.ok(!isAvailable);
@@ -52,7 +57,7 @@ public class UserController {
         Optional<User> existingUser = userRepository.findByUserName((user.getUserName()));
         User savedUser;
 
-        //Check if user already exist with same email, display the message. Else create new user.
+        //Check if user already exist with same username, display the message. Else create new user.
         if (existingUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User with same username already exist");
         }
@@ -69,11 +74,10 @@ public class UserController {
             //store all the new user details in the user table and store the encoded password instead of plain text.
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             savedUser = userRepository.save(user);
-
             return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
         }
         catch(DataIntegrityViolationException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username or Email already exists. Please choose another.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists. Please choose another.");
         }
     }
 
@@ -107,7 +111,6 @@ public class UserController {
             //Store the updated password (if any) in encoded format.
             if (user.getPassword()!= null && !user.getPassword().isBlank()) {
                 savedUser.setPassword(passwordEncoder.encode(user.getPassword()));
-
             }
 
             //Verify if family members exist for the existing user.
@@ -124,7 +127,6 @@ public class UserController {
                             existing.setRelationship(familyMember.getRelationship());
                             existing.setUser(savedUser);
                             familyMemberRepository.save(existing);
-
                     }
 
                     else {

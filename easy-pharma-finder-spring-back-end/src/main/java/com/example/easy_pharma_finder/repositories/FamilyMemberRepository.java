@@ -7,6 +7,5 @@ import java.util.List;
 
 @Repository
 public interface FamilyMemberRepository extends JpaRepository<FamilyMember, Integer> {
-    List<FamilyMember> findByUserId(Integer userId);
-
+    List<FamilyMember> findByUserId(Integer userId);//query the family member table and return all the values based on user id.
 }

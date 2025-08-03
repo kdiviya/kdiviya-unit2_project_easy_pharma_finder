@@ -2,8 +2,7 @@ package com.example.easy_pharma_finder.models;
 
 import jakarta.persistence.*;
 
-import java.math.BigDecimal;
-
+//create pharmacy_medication_cost table with below fields
 @Entity
 public class PharmacyMedicationCost {
 

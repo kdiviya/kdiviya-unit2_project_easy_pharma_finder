@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
-
+//Create a user table with below fields.
 @Entity
 public class User {
     @Id
@@ -20,10 +20,7 @@ public class User {
     private String userName;
 
     private LocalDate dob;
-
     private String password;
-
-    @Column(nullable = false, unique = true)
     private String email;
 
     private String contactNo;
@@ -37,8 +34,9 @@ public class User {
     private String insuranceType;
     private String insuranceNumber;
 
+    //specify 1 to many relationship between user and family member table
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference //return user with family members[] in JSON
     private List<FamilyMember> familyMembers;
 
     public User(int id, String firstName, String middleName, String lastName, String userName, LocalDate dob, String password, String email, String contactNo, String street, String country, String city, String state, String zipCode, String insuranceProvider, String insuranceType, String insuranceNumber) {

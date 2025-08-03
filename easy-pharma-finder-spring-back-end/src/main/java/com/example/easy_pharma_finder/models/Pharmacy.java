@@ -2,6 +2,7 @@ package com.example.easy_pharma_finder.models;
 
 import jakarta.persistence.*;
 
+//create a table pharmacy with below fields.
 @Entity
 public class Pharmacy {
 

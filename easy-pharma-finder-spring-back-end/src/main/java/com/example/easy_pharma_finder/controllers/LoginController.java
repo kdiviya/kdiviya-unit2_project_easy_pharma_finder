@@ -2,7 +2,6 @@ package com.example.easy_pharma_finder.controllers;
 
 import com.example.easy_pharma_finder.models.User;
 import com.example.easy_pharma_finder.repositories.UserRepository;
-import jakarta.persistence.GeneratedValue;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +11,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 
+//Define the connection between front end and back end
 @CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true", maxAge = 3600)
 @RestController
 @RequestMapping("/api/user")
@@ -39,8 +38,10 @@ public class LoginController {
             if (existingUser.isPresent()) {
                 User userExist = existingUser.get();
                 if (passwordEncoder.matches(user.getPassword(), userExist.getPassword())) {
-                    HttpSession session = request.getSession(true);
-                    session.setAttribute("user", userExist.getUserName());
+                    HttpSession session = request.getSession(true); //create session
+                    session.setAttribute("user", userExist.getUserName()); //store the username in that session
+
+                    //create token for that user and stored the token in the particular request to ensure authentication
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(userExist.getUserName(), null, Collections.emptyList());
                     SecurityContextHolder.getContext().setAuthentication(authToken);
