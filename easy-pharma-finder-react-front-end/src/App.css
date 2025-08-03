@@ -353,7 +353,13 @@ fieldset {
   .profile label {
     width: 150px;
   }
-
+  .table-container {
+    margin: 0;
+    overflow-x: scroll;
+  }
+  .med-table {
+    overflow-x: scroll;
+  }
 }
 
 #add-family-member {

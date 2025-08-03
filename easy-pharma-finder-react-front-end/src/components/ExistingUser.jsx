@@ -401,23 +401,27 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
                         {!isEdit ? 
                                 (
                                     userProfile.familyMembers && userProfile.familyMembers.length > 0 ? 
-                                    (<table className="family-members">
-                                        <thead>
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>DOB</th>
-                                                <th>Relationship</th>
-                                            </tr>
-                                        </thead>
+                                    (
+                                        <div className="table-container">
+                                            <table className="family-members">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>DOB</th>
+                                                        <th>Relationship</th>
+                                                    </tr>
+                                                </thead>
 
-                                        <tbody>
-                                            {userProfile.familyMembers.map((member, index) => (
-                                                <tr key={index}>
-                                                    <td>{member.name}</td><td>{member.dob}</td><td>{member.relationship}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>)
+                                                <tbody>
+                                                    {userProfile.familyMembers.map((member, index) => (
+                                                        <tr key={index}>
+                                                            <td>{member.name}</td><td>{member.dob}</td><td>{member.relationship}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    )
                                     : 
 
                                     (<div>
@@ -427,6 +431,7 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
 
                                 :
                                 (editProfile.familyMembers && editProfile.familyMembers.length > 0 ? (
+                                    <div className="table-container">
                                     <table className="family-members">
                                         <thead>
                                             <tr>
@@ -464,7 +469,9 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
                                             ))}
                                         </tbody>
 
-                                    </table>)
+                                    </table>
+                                    </div>
+                                    )
                                 :
                                     (<div>
                                         (No family members added.)
