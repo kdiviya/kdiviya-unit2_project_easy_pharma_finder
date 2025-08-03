@@ -62,8 +62,8 @@ const LoginInfo = ({setUserLogged}) => {
                 }  
 
                 const data = await response.json(); 
-                
-                localStorage.setItem("ID", data.sessionID); //store the session id and username in the local storage.
+                console.log("data ",data)
+                localStorage.setItem("ID", data.sessionId); //store the session id and username in the local storage.
                 localStorage.setItem("userName", userName);
                 setUserLogged(userName); 
 
@@ -86,10 +86,10 @@ const LoginInfo = ({setUserLogged}) => {
         }
     };
 
-   
+   //used semantic elements (header, main, footer in the return)
     return (
         <div className="container">
-            <div className="content">
+            <main className="content">
                 <form className = "login-form">
 
                     <div>
@@ -113,7 +113,7 @@ const LoginInfo = ({setUserLogged}) => {
                         <ReusableButton id="newuser-button" type="submit" name="signup" onClick={handleSignUpButton}>SignUp</ReusableButton>
                     </div>  
                 </form>
-            </div>
+            </main>
 
             <Footer />
         </div>

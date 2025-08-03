@@ -4,21 +4,16 @@ import React, { useEffect } from 'react';
 //Display the logout message when the user clicks logout.
 const Logout = ({setUserLogged}) => {
     
-
-    //Clear the userLogged state and localStorage when the user logs out.
+    //Clear the username and local storage when the user logs out.
    useEffect(() => {
         setUserLogged(null);
         localStorage.removeItem("ID");
-        localStorage.removeItem("userName");
-        setUserLogged(null);
-       
+        localStorage.removeItem("userName");   
     }, [setUserLogged]);
 
     return (
 
         <div className='container'>
-      
-
             <div className='content'>
                 <p className='logout-p'> You have successfully logged out.</p>
             </div>
