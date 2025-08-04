@@ -92,6 +92,7 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
                         password:""
                         
         });
+        
     //Display the user selected country and the corressponding selected state
         const country = countries.find(country => country.name === userProfile.country);
         if (country) {

@@ -55,6 +55,7 @@ const NewUser = () => {
         }));
 
     };
+    
     //Update the state variable when the user enters the family member details.
     const handleMemberChange = (e) => { 
         const { name, value } = e.target; //Assign the name and value of the HTML element.
@@ -192,7 +193,7 @@ const NewUser = () => {
             return;
         }
        
-        //
+        //Save all the user details using POST() in the backend
         try {
             const response = await fetch('http://localhost:8080/api/user/submit', {
 				method: 'POST',
