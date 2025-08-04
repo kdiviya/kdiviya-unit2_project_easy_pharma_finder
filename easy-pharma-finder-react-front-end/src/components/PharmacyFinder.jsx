@@ -25,16 +25,19 @@ const PharmacyFinder = () => {
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include' // Include credentials to access the session
                 });
-                 //Display the messsage if response is not found
-                if (!response.ok) {
-                    setMessage("No Medication details are associated with that family member.");
-                }
+                
                 const data = await response.json();
-                setCostBreakdownData(data);   //Assign the response to costBreakdown Data.           
+
+                if(data.info && data.results && data.results.length === 0) {
+                    setMessage(data.info);
+                }
+                else {
+                    setCostBreakdownData(data.results);  
+                }                   
                 
             } 
 
-            //Catch any errors thrown from the try block and log errors for debugging purposes.
+            //Catch any errors from the try block and log errors for debugging purposes.
             catch (error) {
                 console.error("Pharmacy data not found.");
             }

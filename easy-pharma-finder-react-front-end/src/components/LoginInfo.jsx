@@ -53,8 +53,14 @@ const LoginInfo = ({setUserLogged}) => {
                     credentials: 'include', // Include credentials to access the session
                     body:JSON.stringify({userName, password}),
                 });
-               
-                //Check if the response is ok, if not, set the message to display error.
+                if (response.status === 401) {
+                    setMessage({
+                      message: "Unauthorized: Invalid username or password. Please try again.",
+                      status: "error",
+                    });
+                    return;
+                  }
+                //Check if the response is not ok, set the message to display error.
                 if (!response.ok) {  
                     setMessage({"message":"Invalid username or password. Please try again.",
                         "status":"error"});

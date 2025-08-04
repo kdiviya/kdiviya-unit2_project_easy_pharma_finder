@@ -1,7 +1,8 @@
 import { Country, State } from 'country-state-city';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Footer from './Footer';
 import ReusableButton from './ReusableButton';
+import { useLocation } from 'react-router-dom';
 
 //Displays the new user form and store the user's details in the back end.
 const NewUser = () => {
@@ -13,7 +14,7 @@ const NewUser = () => {
 
     //Hide the form after clicking submit button and display the confirmation messsage to the user using this state variable.
     const [isFormVisible, setIsformVisible] = useState(true);
-
+    const location = useLocation();
     //Create a state variable to store the form data
     const [user, setUser]= useState({
         firstName: "",
@@ -44,6 +45,30 @@ const NewUser = () => {
     const [message, setMessage] = useState(null); //State variable to store messages.
     const [availableMessage, setAvailableMessage] = useState(null);
     const [usernameAvailable, setUsernameAvailable] = useState(null); //validate the new user's username availability using this variable.
+
+     useEffect(() => {
+            location.pathname === "/new-user" && setIsformVisible(true);
+            setUser({
+                firstName: "",
+                middleName: "",
+                lastName: "",
+                dob:"",
+                userName:"",
+                password:"",
+                email:"",
+                contactNo:"",
+                street:"",
+                country:"",
+                state:"",
+                city:"",
+                zipCode:"",
+                insuranceProvider:"",
+                familyMembers: [],
+                insuranceNumber:"",
+                insuranceType:""
+            });
+            setMessage(null);
+        },[location]);
 
     //Update the state variable when the user enters the data in the form.
     const handleInputChange = (e) => {
@@ -153,7 +178,7 @@ const NewUser = () => {
 
             !data && setAvailableMessage({"message":"Username is not available. Please choose other name.", "status":"error"})       
         }
-        //Catch any errors thrown from the try block and log errors for debugging purposes.
+        //Catch any errors from the try block and log errors for debugging purposes.
         catch(error) {
             console.error("Error in checking username availability");
         }
@@ -204,17 +229,25 @@ const NewUser = () => {
 			});
 
              //Display the error messsage if response is not found
-            if(!response.ok) {
-                throw new Error('Failed to submit the form. Please try again later.');
+             if (!response.ok) {
+                const errorText = await response.text();
+                setMessage({
+                    "message": errorText || "Submission failed. Please try again later.",
+                    "status": "error"
+                });
+                return;
             }
-
             const data = await response.json();
             setIsformVisible(false);   //If the user clicks submit button, set the form to invisible.
 		} 
 
-        //Catch any errors thrown from the try block and log errors for debugging purposes.
+        //Catch unexpected errors 
         catch (error) {
-			console.error(error.message);
+			console.error("Error during submission", error);
+            setMessage({
+                "message": "Submission failed. Please try again later.",
+                "status": "error"
+            });
         }
     
     };
@@ -355,8 +388,8 @@ const NewUser = () => {
                                                 </tr>
                                             </thead>
 
-                                            {
-                                                user.familyMembers.map((member, index) => (
+                                            <tbody>
+                                            {user.familyMembers.map((member, index) => (
                                                     <tr key={index}>
                                                         <td>
                                                             <input type="checkbox" checked={member.isChecked} onChange= { () => { 
@@ -371,8 +404,8 @@ const NewUser = () => {
                                                         <td>{member.relationship}</td>
                                                         <td>{member.dob}</td>
                                                     </tr>
-                                                ))
-                                            }
+                                                ))}
+                                            </tbody>
                                         </table>
                                     </div>
                                     <ReusableButton id="remove-family-member" type="button" name="remove-family-member" onClick={handleRemoveFamilyMember}>Remove Family Member</ReusableButton>
@@ -385,7 +418,7 @@ const NewUser = () => {
                         
                         <div className="button-submit">
                             <ReusableButton type="submit" id="submit" name="submit" >Submit</ReusableButton>
-                            {availableMessage && <p> {availableMessage.message}</p>}
+                            {availableMessage && <p className='error'>{availableMessage.message}</p>}
                         </div>
 
                     </form>
