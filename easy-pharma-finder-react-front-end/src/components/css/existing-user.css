@@ -1,0 +1,69 @@
+.profile {
+    font-size: 20px;
+    width: 400px;
+    margin: 0 auto;
+}
+
+.profile div {
+    margin: 10px 0;
+}
+
+.profile label {
+    width: 200px;
+    display: inline-block;
+}
+
+.profile .location-container label {
+    width: 180px;
+}
+
+.profile p,
+.profile label {
+    font-weight: bold;
+}
+
+.profile input {
+    font-size: 18px;
+    height: 25px;
+}
+
+.profile span {
+    margin-left: 3px;
+}
+
+.btn-container {
+    text-align: center;
+}
+
+.btn-edit {
+    cursor: pointer;
+    font-size: 18px;
+    margin: 0 10px;
+}
+
+.btn-edit:hover {
+    background-color: #72c0ee;
+}
+
+.relation-select {
+    font-size: 18px;
+    padding: 5px;
+}
+
+.dob-input {
+    padding: 1px;
+}
+
+.family-members {
+    width: 100%;
+}
+
+.family-members th, .family-members td {
+    border-color: #fff;
+}
+
+.message-update {
+    font-weight: bolder;
+    color:rgb(3, 92, 16);
+}
+

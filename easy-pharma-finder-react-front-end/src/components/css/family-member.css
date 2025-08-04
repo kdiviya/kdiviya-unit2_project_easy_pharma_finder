@@ -1,0 +1,18 @@
+.profile {
+    font-size: 20px;
+    width: 800px;
+    margin: 0 auto;
+}
+
+.family_member {
+    margin:0;
+    padding:0;
+}
+
+.family-member-link { 
+    color:rgb(7, 7, 230);
+}
+
+.family-member-link li {
+    margin: 15px 0;
+}
