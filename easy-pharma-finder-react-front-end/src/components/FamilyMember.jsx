@@ -9,6 +9,7 @@ const FamilyMember = () => {
 
     const { userName } = useParams(); // Get the userName from the URL parameters
     const [familyMembers, setFamilyMembers] = useState([]); //to store the family member details from the backend.
+    const [message, setMessage] =  useState("");
     
     //Fetch the family member details using "GET()" from the backend whenever the username changes
     useEffect(() => { 
@@ -23,16 +24,29 @@ const FamilyMember = () => {
                 });
                 //Display the error messsage if response is not found
                 if (!response.ok) {
-                    throw new Error("Failed to fetch user data");
+                    if (response.status === 404) {
+                        setMessage({ status: 'error', message: 'User not found. Please check the username.' });
+                    } else if (response.status === 500) {
+                        setMessage({ status: 'error', message: 'Server error. Please try again later.' });
+                    } else {
+                        setMessage({ status: 'error', message: 'Failed to fetch family members. Please try again.' });
+                    }
                 }
                 const data = await response.json(); 
-                setFamilyMembers(data); //store the json response into familyMembers state variable
+
+                if (data.results && data.results.length > 0) {
+                    setFamilyMembers(data.results); //store the json response into familyMembers state variable
+                } 
+                else {
+                    setMessage(data.info || 'No medications found.');
+                }
                         
             } 
 
-            //Catch any errors thrown from the try block and log errors for debugging purposes.
+            //Catch any errors from the try block and log errors for debugging purposes.
             catch (error) {
                 console.error("Error fetching user data:", error);
+                setMessage({ status: 'error', message: 'An unexpected error occurred. Please try again.' });
             }       
         };
 
@@ -48,7 +62,12 @@ const FamilyMember = () => {
                 <div className="profile">
                     <h3 className="h2-animation">Hello {familyMembers.find(members => members.relationship === "Self") ?.name}, Welcome to Easy Pharma Finder!!!</h3>
                     <p>Below are the user/s associated with your account. Please click the below link to view their medication.</p>
-
+                     {/* Display message if there's an error or no data */}
+                     {message && (
+                        <div className="message">
+                            {message.message}   
+                        </div>
+                    )}
                     <ul className = "family_member">
                         {[...familyMembers]
                         .sort((a,b) => (a.relationship === "Self"? -1 : 1)) // Sort so that self is always first

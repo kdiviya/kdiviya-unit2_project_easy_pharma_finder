@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 //Define the connection between front end and back end
@@ -36,7 +37,7 @@ public class UserController {
             return ResponseEntity.ok(user);
         }
         else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("status", "error", "message", "User not found."));
         }
     }
 
@@ -76,7 +77,7 @@ public class UserController {
             savedUser = userRepository.save(user);
             return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
         }
-        catch(DataIntegrityViolationException e) {
+        catch(DataIntegrityViolationException e) { //Handle the username already exist error.
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username already exists. Please choose another.");
         }
     }
@@ -129,19 +130,19 @@ public class UserController {
                             familyMemberRepository.save(existing);
                     }
 
-                    else {
+                    else { // If family member doesn't exist, add a new one.
                         familyMember.setUser(savedUser);
                         familyMemberRepository.save(familyMember);
                     }
                 }
             }
 
-            savedUser = userRepository.save(savedUser);
+            savedUser = userRepository.save(savedUser); // Save the updated user details in the user table.
             return ResponseEntity.ok(savedUser);
         }
-
+        //Handle the error where the user doesn't exist
         else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User details not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("status", "error", "message", "User details not found"));
         }
     }
 
@@ -154,12 +155,12 @@ public class UserController {
         List<FamilyMember> familyMember =  familyMemberRepository.findAllById(familyMemberId);
 
         if (familyMember.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Content not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("status", "error", "message", "No family members found"));
         }
 
         else {
             familyMemberRepository.deleteAll(familyMember);
-            return ResponseEntity.ok("Family Member/s deleted successfully");
+            return ResponseEntity.ok(Map.of("status", "success", "message", "Family member(s) deleted successfully"));
         }
     }
 

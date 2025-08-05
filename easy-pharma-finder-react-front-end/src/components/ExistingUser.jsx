@@ -30,9 +30,22 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include', // Include credentials to access the session
                 });
-                //Display the error messsage if response is not found
+
+                //Handle the 404 error to avoid runtime errors.
+                if (response.status === 404) {
+                    // User not found, show friendly message
+                    setUserProfile(null);
+                    setMessage({ status: 'error', message: 'User not found. Please check the username.' });
+                    return;
+                  }
+
+                //Display the messsage if response is not found
                 if (!response.ok) {
-                    throw new Error('Failed to fetch user profile');
+                    setMessage({
+                        status: 'error',
+                        message: 'Failed to fetch user profile. Please try again later.'
+                    });
+                    return;
                 }
 
                 const data = await response.json();
@@ -40,9 +53,13 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
                 setUserProfile(data);
             
             } 
-            //Catch any errors thrown from the try block and log errors for debugging purposes.
+            //Catch any errors from the try block and log errors for debugging purposes.
             catch (error) {
                 console.error('Error fetching user profile:', error);
+                setMessage({
+                    status: 'error',
+                    message: 'Failed to fetch user profile. Please try again later.'
+                });
             }
         };
         fetchUserProfile();
@@ -154,8 +171,11 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
                     credentials: 'include', // Include credentials to access the session
                     body:JSON.stringify(removedID),
                 });
+
             if (!response.ok) {
-                throw new Error('Failed to remove family members');
+                const errorData = await response.json(); // Capture the error response
+                setWarningMessage(errorData.message || 'Failed to remove family members. Please try again.');
+                return;
             }
         }
         //store the updated family members into the editProfile variable.
@@ -164,10 +184,10 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
                 familyMembers: updatedFamilyMembers  
             }));
         }
-        //Catch any errors thrown from the try block and log errors for debugging purposes.
+        //Catch any errors from the try block and log errors for debugging purposes.
         catch(error) {
             console.error("Debugging Information:" ,error);
-            return;
+            setWarningMessage('An error occurred while removing the family member(s).');
         }          
     };
 
@@ -190,24 +210,39 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
                 body: JSON.stringify(editProfile),
             });
 
-            if (!response.ok) { //throw error if no response.
-                throw new Error('Failed to update user profile');
+            if (response.ok) {
+                const data = await response.json();
+                setUserProfile(data);           
+                setIsEdit(false);
+                setEditProfile({...data,
+                                password:""
+                }); // Update the editProfile state with the response data from the backend
+
+                setMessage("Profile updated successfully.");
             }
 
-            const data = await response.json();
-            setUserProfile(data);           
-            setIsEdit(false);
-            setEditProfile({...data,
-                            password:""
-            }); // Update the editProfile state with the response data from the backend
-
-            setMessage("Profile updated successfully.");
+            else { //Handle runtime errors
+                if (response.status === 400) {
+                    setMessage("Bad Request:Invalid input, please check your data.");
+                } else if (response.status === 500) {
+                    setMessage("Server error occurred. Please try again later.");
+                } else {
+                    setMessage("An error occurred while updating your profile. Please try again.");
+                }
+            }
+                
         } 
-        
-        //Catch any errors thrown from the try block and log errors for debugging purposes.
+
+        //Handle unexpected errors
         catch (error) {
             console.error('Error updating user profile:', error);
+            setMessage("An error occurred while updating your profile. Please try again.");
         }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        await handleSaveButton();
     };
 
     //Return a loading message DOM element while the user profile is being fetched from the backend.
@@ -217,7 +252,7 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
 
     // JSX below is fully controlled by React — any UI updates are handled through useState
     return(
-        <form onSubmit = {handleSaveButton}>
+        <form onSubmit = {handleSubmit}>
             <div className="container">
 
                 {/* Display messages using conditional rendering controlled by React state */}
@@ -363,7 +398,7 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
                             <label>Insurance Provider *</label>  
                             {isEdit ?
                             (<select className="dropdown" name="insuranceProvider" value={editProfile.insuranceProvider || ""} onChange={handleChange} required>
-                                    <option value="">Select Insurance Provider</option>
+                                    <option value="" disabled hidden>Select Insurance Provider</option>
                                     <option value="Aetna">Aetna</option>
                                     <option value="Blue Cross Blue Shield">Blue Cross Blue Shield</option>
                                 </select>)
@@ -447,7 +482,7 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
                                             {editProfile.familyMembers.map((member, index) => (
                                                 <tr key={index}>
                                                     <td>
-                                                        <input type="checkbox" checked={member.isChecked} onChange={(e) => handleCheckboxChange(e, index)} />
+                                                        <input type="checkbox" checked={member.isChecked || false} onChange={(e) => handleCheckboxChange(e, index)} />
                                                     </td>
                                                     <td>
                                                         <input type="text" value={member.name} onChange={(e) => handleFamilyMemberChange(e, index, 'name')} />
@@ -491,7 +526,7 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
                                 </ReusableButton>
 
                                 <ReusableButton className="btn-edit" type ="button" id="add_family_member" name = "add_family_member" onClick={handleAddFamilyMember}>Add Family Member</ReusableButton>
-                                <ReusableButton className="btn-edit" id="save" name = "save" type="button" onClick={handleSaveButton}>Save</ReusableButton> 
+                                <ReusableButton className="btn-edit" id="save" name = "save" type="submit">Save</ReusableButton> 
 
                                 <ReusableButton className="btn-edit" id="cancel" name = "cancel" onClick={() => { setIsEdit(false)
                                                                                             setWarningMessage(null);
