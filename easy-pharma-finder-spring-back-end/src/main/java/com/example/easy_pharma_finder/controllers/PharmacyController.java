@@ -3,7 +3,6 @@ package com.example.easy_pharma_finder.controllers;
 import com.example.easy_pharma_finder.models.*;
 import com.example.easy_pharma_finder.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.*;
@@ -35,24 +34,24 @@ public class PharmacyController {
         List<Map<String, Object>> responseDetails= new ArrayList<>();
 
         if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            return ResponseEntity.ok(Map.of("info", "User not found.", "results", Collections.emptyList()));
         }
         String zipCode = user.get().getZipCode();
         List<Pharmacy> pharmacies = pharmacyRepository.findByZipCode(zipCode);
 
         if (pharmacies.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No pharmacies found for this zip code");
+            return ResponseEntity.ok(Map.of("info", "No pharmacies found for this zip code.", "results", Collections.emptyList()));
         }
 
        Optional<FamilyMember> familyMember = familyMemberRepository.findById(familyMemberId);
         if (familyMember.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No medications found for the selected family member");
+            return ResponseEntity.ok(Map.of("info", "No medications found for the selected family member.", "results", Collections.emptyList()));
         }
 
         List<Medication> medications = familyMember.get().getMedications();
 
         if (medications.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No medications found");
+            return ResponseEntity.ok(Map.of("info", "No medications found for this user.", "results", Collections.emptyList()));
         }
 
         //Iterate over the loop for all the medication associated with particular family member
@@ -77,13 +76,12 @@ public class PharmacyController {
                     responseDetails.add(map);
                 }
             }
-
         }
 
         if (responseDetails.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Content not found");
+            return ResponseEntity.ok(Map.of("info", "No cost breakdown data found.", "results", Collections.emptyList()));
         }
 
-        return ResponseEntity.ok(responseDetails);
+        return ResponseEntity.ok(Map.of("info","success", "results",responseDetails));
     }
 }
