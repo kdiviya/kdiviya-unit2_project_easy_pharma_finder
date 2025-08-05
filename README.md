@@ -104,7 +104,7 @@ This will start the backend API on http://localhost:8080.
 - **Medication Price Alerts**  
   Implement a notification system that allows users to set alerts when medication prices drop or become more affordable at certain pharmacies, making it easier for them to track cost changes.
 
--**Getting Real-Time Data for Medication Prices**  
+- **Getting Real-Time Data for Medication Prices**  
   One of the challenges is obtaining real-time pricing data for medications from various pharmacies. While we can show base pricing data, getting accurate and up-to-date information across multiple pharmacies is a challenge due to API limitations and the dynamic nature of drug pricing.
 
 
