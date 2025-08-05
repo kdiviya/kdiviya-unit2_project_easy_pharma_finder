@@ -30,7 +30,7 @@ public class MedicationController {
     //corresponds to url (http://localhost:8080/api/user/existingUser/{userName}/family-members
     @GetMapping("/existingUser/{userName}/family-members")
     //Get all the family members based on the existing username.
-    public ResponseEntity<?> getFamilyMembers(@PathVariable String userName) {
+    public ResponseEntity<?> getFamilyMembers(@PathVariable("userName") String userName) {
         Optional<User> userExist = userRepository.findByUserName(userName); //get the user details based on username
 
         if (userExist.isPresent()) {

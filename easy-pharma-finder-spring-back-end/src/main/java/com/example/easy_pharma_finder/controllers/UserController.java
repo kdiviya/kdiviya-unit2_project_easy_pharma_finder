@@ -29,7 +29,7 @@ public class UserController {
     //corresponds to url (http://localhost:8080/api/user/username?userName="logged in username")
     @GetMapping("/username")
     //Display the user details for the logged-in user.
-    public ResponseEntity<?> getUserDetails(@RequestParam String userName) {
+    public ResponseEntity<?> getUserDetails(@RequestParam("userName") String userName) {
         Optional<User> userProfile  = userRepository.findByUserName(userName);
 
         if (userProfile.isPresent()) {
@@ -45,7 +45,7 @@ public class UserController {
     //corresponds to url (http://localhost:8080/api/user/checkUsername?username="username")
     @GetMapping("/checkUsername")
     //Validate username availability
-    public ResponseEntity<?> checkUserNameAvailability(@RequestParam String username) {
+    public ResponseEntity<?> checkUserNameAvailability(@RequestParam("username") String username) {
         boolean isAvailable = userRepository.findByUserName(username).isPresent();
         return ResponseEntity.ok(!isAvailable);
     }
