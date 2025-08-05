@@ -32,7 +32,7 @@
 
 ---
 
-## Technologies Used
+## Installation Steps
 Ensure the following items are installed on the local machine to run the project
 
 - [Node.js] (https://nodejs.org/) (for the front-end react app)
@@ -40,9 +40,6 @@ Ensure the following items are installed on the local machine to run the project
 - [Maven] (https://maven.apache.org/install.html) (for building the back-end application)
 - [MYSQL] (https://dev.mysql.com/downloads/mysql/) (SQL database for back end storage)
 
----
-
-## Installation Steps
 
 Follow these steps to set up the development environment and run the application locally:
 
