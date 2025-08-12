@@ -32,7 +32,7 @@ const FamilyMember = () => {
                         setMessage({ status: 'error', message: 'Failed to fetch family members. Please try again.' });
                     }
                 }
-                const data = await response.json(); 
+                 const data = await response.json(); 
 
                 if (data.results && data.results.length > 0) {
                     setFamilyMembers(data.results); //store the json response into familyMembers state variable

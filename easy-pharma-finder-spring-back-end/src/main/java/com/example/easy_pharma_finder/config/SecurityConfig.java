@@ -26,13 +26,14 @@ public class SecurityConfig {
                                             .requestMatchers("/api/user/**", "/api/user/pharmacy-details/**").authenticated()
                                         )
                   .sessionManagement(session -> session.maximumSessions(1)) //allows 1 session per user
-                  .securityContext(securityContext -> securityContext.requireExplicitSave(false)); //Save the security context (from Login controller) after user authentication.
+                  //Save the security context (from Login controller) after user authentication.
+                  .securityContext(securityContext -> securityContext.requireExplicitSave(false));
 
 
         return httpSecurity.build();
     }
 
-    //To load user details, even though  I handled user authentication in Login Controller
+    //Security Filter expects UserDetailsService even though I handled user authentication in Login Controller
     @Bean
     public UserDetailsService userDetailsService() {
         return new InMemoryUserDetailsManager();

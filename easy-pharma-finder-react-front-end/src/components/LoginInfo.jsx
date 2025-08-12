@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import React from 'react';
 import Footer  from './Footer';
 import ReusableButton from './ReusableButton';
 import './css/login.css';

@@ -31,7 +31,7 @@ public class PharmacyController {
 
         Optional<User> user = userRepository.findByUserName(userName);
         double insurancePaidPercent = 0.0;
-        List<Map<String, Object>> responseDetails= new ArrayList<>();
+        List<Map<String, Object>> responseDetails= new ArrayList<>(); //Objects within array
 
         if (user.isEmpty()) {
             return ResponseEntity.ok(Map.of("info", "User not found.", "results", Collections.emptyList()));
