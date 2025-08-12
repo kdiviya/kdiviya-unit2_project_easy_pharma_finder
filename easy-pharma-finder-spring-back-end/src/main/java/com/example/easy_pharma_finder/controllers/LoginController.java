@@ -41,7 +41,7 @@ public class LoginController {
                     HttpSession session = request.getSession(true); //create session
                     session.setAttribute("user", userExist.getUserName()); //store the username in that session
 
-                    //create token for that user and stored the token in the particular request to ensure authentication
+                    //create token for that user and stored the token in the particular context to ensure authentication
                     UsernamePasswordAuthenticationToken authToken =
                             new UsernamePasswordAuthenticationToken(userExist.getUserName(), null, Collections.emptyList());
                     SecurityContextHolder.getContext().setAuthentication(authToken);

@@ -1,5 +1,3 @@
-# kdiviya-unit2_project_easy_pharma_finder
-
 # Easy Pharma Finder
 
 ## Project Description
@@ -45,51 +43,69 @@ Follow these steps to set up the development environment and run the application
 
 ### 1. **Clone the Repository**
 
-Clone the project repository to your local machine using, 
+Clone the project repository to your local machine using: 
+```bash
 git clone <<github url>>
+```
 
 ### 2. **Set Up Backend**
 
-Install Java JDK and maven for building the back end,
-brew install maven (for mac users)
+Install Java JDK and maven for building the back end.
+For Mac users, you can install Maven using Homebrew:
+```bash
+brew install maven 
+```
 
 ### 3. **Set Up MySQL Database**
 
-Install MySQL and Create a new MySQL database for the application using,
-CREATE DATABASE databasename;
+Install MySQL and Create a new MySQL database for the application using:
+```bash
+CREATE DATABASE databasename
+```
 
 ### 4. **Configure the application.properties file in src/main/resources to connect the Spring Boot application to the MySQL database**
 
+```properties
 spring.application.name=easy-pharma-finder
 spring.datasource.url=jdbc:mysql://yourhostname:portnumber/easy_pharma_finder
 spring.datasource.username=username
 spring.datasource.password=yourpassword
 spring.jpa.hibernate.ddl-auto=update
+```
 
 ### 5. **Build and Run the Backend in IntelliJ IDEA**
 
-1. Open IntelliJ IDEA and import the project by selecting File > Open, and choose the project folder.
-2. Ensure that the project SDK is set to Java 21. To do this: Go to File > Project Structure. Under Project Settings, select Project, and set the Project SDK to JDK 21.
+1. Open IntelliJ IDEA and import the project by selecting **File > Open**, then choose the project folder.
+2. Ensure that the project SDK is set to Java 21. To do this: 
+Go to **File > Project Structure**. Under **Project Settings**, select **Project**, and set the **Project SDK** to `JDK 21`.
 3. In IntelliJ, run the Spring Boot application:
-    Open the EasyPharmaFinderApplication.java file.
-    Click on the green run button at the top right or use Shift + F10.
+    - Open the `EasyPharmaFinderApplication.java` file.
+    - Click on the green run button at the top right or use `Shift + F10`.
 
-This will start the backend API on http://localhost:8080.
+This will start the backend API on [http://localhost:8080](http://localhost:8080).
 
 ### 6. **Set Up Frontend (React)**
 1. Install Node.js (Download Node.js)
-2. Install Frontend Dependencies (cd frontend & npm install)
-3. Run the Frontend in VS Code using npm start. This will launch the frontend application on http://localhost:3000.
+2. Install Frontend dependencies:
+``` bash
+cd frontend 
+npm install
+```
+3. Run the Frontend in VS Code using:
+```bash
+npm start
+```
+This will launch the frontend application on [http://localhost:3000](http://localhost:3000).
 4. Verify the Application 
     Once both the backend and frontend are running, you can access the full application by opening your browser and navigating to:
-    Frontend: http://localhost:3000
-    Backend API: http://localhost:8080
+    - Frontend: [http://localhost:3000](http://localhost:3000)
+    - Backend API: [http://localhost:8080](http://localhost:8080)
 
 ---
 
-[Link to Wireframe] (https://www.figma.com/design/OUrYpu21Q18TiYAAdhzLgf/EasyPharmaFinder?node-id=4-91&m=dev&t=LuC8ta0ngmAJIUdk-1)
+[Link to Wireframe] [https://www.figma.com/design/OUrYpu21Q18TiYAAdhzLgf/EasyPharmaFinder?node-id=4-91&m=dev&t=LuC8ta0ngmAJIUdk-1](https://www.figma.com/design/OUrYpu21Q18TiYAAdhzLgf/EasyPharmaFinder?node-id=4-91&m=dev&t=LuC8ta0ngmAJIUdk-1)
 
-[Link to ER diagram] (https://www.figma.com/board/L54wTKmStp5rQ7msJfiSaJ/ERD_EasyPharma_Finder?node-id=0-1&t=EqZJvRXY4w0mAP2f-1)
+[Link to ER diagram] [https://www.figma.com/board/L54wTKmStp5rQ7msJfiSaJ/ERD_EasyPharma_Finder?node-id=0-1&t=EqZJvRXY4w0mAP2f-1](https://www.figma.com/board/L54wTKmStp5rQ7msJfiSaJ/ERD_EasyPharma_Finder?node-id=0-1&t=EqZJvRXY4w0mAP2f-1)
 
 ---
 

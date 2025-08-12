@@ -27,11 +27,11 @@ public class PharmacyController {
     //corresponds to url (http://localhost:8080/api/user/pharmacy-details?userName="logged in username"&familyMemberId="id")
     @GetMapping("/pharmacy-details")
     //Get the pharmacy details based on user's zipcode and get the medication based on the family member id
-    public ResponseEntity<?> getPharmacyDetails(@RequestParam String userName, @RequestParam int familyMemberId) {
+    public ResponseEntity<?> getPharmacyDetails(@RequestParam("userName") String userName, @RequestParam("familyMemberId") int familyMemberId) {
 
         Optional<User> user = userRepository.findByUserName(userName);
         double insurancePaidPercent = 0.0;
-        List<Map<String, Object>> responseDetails= new ArrayList<>();
+        List<Map<String, Object>> responseDetails= new ArrayList<>(); //Objects within array
 
         if (user.isEmpty()) {
             return ResponseEntity.ok(Map.of("info", "User not found.", "results", Collections.emptyList()));

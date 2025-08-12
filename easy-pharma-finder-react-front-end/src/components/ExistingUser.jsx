@@ -28,7 +28,7 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
                 const response = await fetch(`http://localhost:8080/api/user/username?userName=${userLogged}`, {
                     method: 'GET',
                     headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include', // Include credentials to access the session
+                    credentials: 'include', // Include credentials to lookup the session
                 });
 
                 //Handle the 404 error to avoid runtime errors.
@@ -92,10 +92,10 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
     const handleFamilyMemberChange = (e, index, name) => {
         const { value } = e.target;
         setEditProfile((currentVal) => {
-            const updatedFamilyMembers = [...currentVal.familyMembers];
+            const updatedFamilyMembers = [...currentVal.familyMembers]; //create shallow copy of family members array
             updatedFamilyMembers[index][name] = value; // Update the specific field of the family member
             return {
-                ...currentVal,
+                ...currentVal, 
                 familyMembers: updatedFamilyMembers
             };
         });
@@ -123,7 +123,7 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
         const { checked } = e.target;
         setEditProfile((currentVal) => {
             const updatedFamilyMembers = [...currentVal.familyMembers];
-            updatedFamilyMembers[index].isChecked = checked; // Update the isChecked property
+            updatedFamilyMembers[index].isChecked = checked; // Update the isChecked field based on the checked property
             return {
                 ...currentVal,
                 familyMembers: updatedFamilyMembers,
@@ -146,9 +146,9 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
     //Remove the selected family memebr from the backend using "DELETE" 
     const handleRemoveFamilyMember = async () => {
         setWarningMessage(null);
-        const updatedFamilyMembers = editProfile.familyMembers.filter(member => !member.isChecked); //store the family mmebers which are not selected
-        const removedFamilyMembers = editProfile.familyMembers.filter(member => member.isChecked); //store the family mmebers which are selected to remove
-        const removedID = removedFamilyMembers.filter(member => member.id != undefined) //Get the id of member which is already in the backend.
+        const updatedFamilyMembers = editProfile.familyMembers.filter(member => !member.isChecked); //store the family members which are not selected
+        const removedFamilyMembers = editProfile.familyMembers.filter(member => member.isChecked); //store the family members which are selected to remove
+        const removedID = removedFamilyMembers.filter(member => member.id != undefined) //Remove the  member which is not in the backend.
                                             .map(member => member.id); //Get the id of the selected family members
        
                                             
@@ -200,7 +200,7 @@ const ExistingUser = ({userLogged}) => { //logged username passes as a props fro
         if(editProfile.password && !pwdPattern.test(editProfile.password)) {
             setMessage("Password must be at least 8 characters, include uppercase letter, number, and special character.");
             return;
-          }
+        }
         
         try {
             const response = await fetch(`http://localhost:8080/api/user/updateUser`, {
